@@ -1,0 +1,3 @@
+useDynLib(Rpyplot)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)

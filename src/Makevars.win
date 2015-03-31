@@ -1,0 +1,2 @@
+PKG_CXXFLAGS=-I"C:/Anaconda/include" -I"C:/Anaconda/PCBuild"
+PKG_LIBS=-L"C:/Anaconda/libs"  -L"C:/Anaconda/libs/python27.lib" -lpython27
