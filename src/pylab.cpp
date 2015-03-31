@@ -24,7 +24,7 @@ void initialize_python() {
     Py_SetProgramName("python");
     Py_Initialize();
     pyrun("import matplotlib");
-    pyrun("matplotlib.use('Qt4Agg')");
+    //pyrun("matplotlib.use('Qt4Agg')");
     pyrun("import matplotlib.pyplot as plt");
 }
 
