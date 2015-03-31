@@ -44,34 +44,3 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// pyplotCpp
-void pyplotCpp(NumericVector x);
-RcppExport SEXP Rpyplot_pyplotCpp(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    pyplotCpp(x);
-    return R_NilValue;
-END_RCPP
-}
-// pyplot2Cpp
-void pyplot2Cpp(NumericVector x, NumericVector y);
-RcppExport SEXP Rpyplot_pyplot2Cpp(SEXP xSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    pyplot2Cpp(x, y);
-    return R_NilValue;
-END_RCPP
-}
-// pyt
-void pyt(NumericVector x);
-RcppExport SEXP Rpyplot_pyt(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    pyt(x);
-    return R_NilValue;
-END_RCPP
-}

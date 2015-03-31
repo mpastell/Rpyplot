@@ -17,15 +17,3 @@ numvec_to_python <- function(name, x) {
     invisible(.Call('Rpyplot_numvec_to_python', PACKAGE = 'Rpyplot', name, x))
 }
 
-pyplotCpp <- function(x) {
-    invisible(.Call('Rpyplot_pyplotCpp', PACKAGE = 'Rpyplot', x))
-}
-
-pyplot2Cpp <- function(x, y) {
-    invisible(.Call('Rpyplot_pyplot2Cpp', PACKAGE = 'Rpyplot', x, y))
-}
-
-pyt <- function(x) {
-    invisible(.Call('Rpyplot_pyt', PACKAGE = 'Rpyplot', x))
-}
-
