@@ -1,2 +1,2 @@
-PKG_CXXFLAGS=-I/usr/include/python2.7 -I/usr/include/python2.7/numpy -I/usr/include/x86_64-linux-gnu/python2.7 -lpython2.7 -ldl -lm
-PKG_LIBS = -L/usr/lib/python2.7/config-x86_64-linux-gnu -L/usr/lib -lpython2.7 -lpthread -ldl  -lutil -lm  -Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions
+PKG_CXXFLAGS=$(shell "python2.7-config" "--cflags")
+PKG_LIBS = $(shell "python2.7-config" "--ldflags")
