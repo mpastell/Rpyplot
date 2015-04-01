@@ -28,10 +28,21 @@ void pyrun(std::string command){
 //[[Rcpp::export]]
 void initialize_python() {
 #ifndef WIN32
-    dlopen("libpython2.7.so", RTLD_NOW | RTLD_GLOBAL);
+#if PY_MAJOR_VERSION >= 3
+  //Not found in path
+  //This is the path for Ubuntu 14.10
+   dlopen("/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu/libpython3.4.so", RTLD_LAZY |RTLD_GLOBAL); 
+#else
+   dlopen("libpython2.7.so", RTLD_LAZY |RTLD_GLOBAL);
 #endif
-    //wchar_t * name = L"python3.4";
-    Py_SetProgramName((char*)"python");
+#endif
+
+
+#if PY_MAJOR_VERSION >= 3
+    Py_SetProgramName(L"python3.4");
+#else
+  Py_SetProgramName((char*)"python");
+#endif
     Py_Initialize();
     pyrun("import matplotlib");
     //pyrun("matplotlib.use('Qt4Agg')");
