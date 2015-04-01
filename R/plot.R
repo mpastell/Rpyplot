@@ -16,6 +16,7 @@
 #' xlabel("x")
 #' ylabel("$sin(x)^2$")
 #' pyshow()
+#' @export
 pyplot <- function(x,y=NULL, args=NULL, show=FALSE){
   if (is.null(y))
   {
@@ -42,7 +43,15 @@ pyplot <- function(x,y=NULL, args=NULL, show=FALSE){
   #pyrun("plt.show(block=False)") 
 }
 
-stem <- function(x,y=NULL, args=NULL, show=FALSE){
+#' Plot stem plot using pyplot
+#' 
+#' @inheritParams pyplot
+#' @export
+#' @examples
+#' x = seq(0, pi, length=20)
+#' pystem(x, sin(x))
+#' pyshow()
+pystem <- function(x,y=NULL, args=NULL, show=FALSE){
   if (is.null(y))
   {
     numvec_to_python("x", x)
@@ -65,7 +74,19 @@ stem <- function(x,y=NULL, args=NULL, show=FALSE){
     pyshow()  
 }
 
-errorbar <- function(x, y, xerr, yerr, args=NULL, show=FALSE)
+#' Plot error bars using pyplot
+#' 
+#' @param xerr A numeric vector of x errors at each data point
+#' @param yerr A numeric vector of y errors at each data point
+#' @inheritParams pyplot
+#' @examples
+#' x = seq(0, 2*pi, length=50)
+#' xerr = rep(0.05, length(x)) #absolute error
+#' yerr = sin(x)*0.1 #relative error
+#' pyerrorbar(x, sin(x), xerr, yerr, args=" fmt='o', ecolor='red' ")
+#' pyshow()
+#' @export
+pyerrorbar <- function(x, y, xerr, yerr, args=NULL, show=FALSE)
 {
   numvec_to_python("x", x)
   numvec_to_python("y", y)
@@ -81,20 +102,27 @@ errorbar <- function(x, y, xerr, yerr, args=NULL, show=FALSE)
     pyshow()
 }
 
-# x <- 1:nrow(volcano)*.2
-# y <- 1:ncol(volcano)*.5
-# pycontourf(x, y, volcano)
+
+#' Filled contour using pyplot
+#' 
+#' @param z array of z-axis coordinates
+#' @inheritParams pyplot
+#' @examples
+#' x <- 1:nrow(volcano)*.2
+#' y <- 1:ncol(volcano)*.5
+#' pycontourf(x, y, volcano, show=T)
+#' @export
 pycontourf <- function(x, y, z, args=NULL, show=FALSE)
 {
   numvec_to_python("x", x)
   numvec_to_python("y", y)
-  numvec_to_python("z_size", c(nr, nc))
   
   #Array moved to Python as list and converted to 
   #NumPy array
   nr = nrow(z)
   nc = ncol(z)
   numvec_to_python("z", z)
+  numvec_to_python("z_size", c(nr, nc))
   pyrun("import numpy as np")
   pyrun("zn = (np.reshape(z, z_size, order='F')).T")
   
@@ -110,12 +138,10 @@ pycontourf <- function(x, y, z, args=NULL, show=FALSE)
     pyshow()
 }
 
-
-
-
-
+#' @export
 pyshow <- function(){pyrun("plt.show()")}
 
+#' @export
 pyfigure <- function(num=NULL){
   if (is.null(num))
   {
@@ -127,8 +153,11 @@ pyfigure <- function(num=NULL){
   pyrun(cmd)
 }
 
+#' @export
 xlabel <- function(label){plot_cmd("xlabel", label)}
+#' @export
 ylabel <- function(label){plot_cmd("ylabel", label)}
+#' @export
 pytitle <- function(label){plot_cmd("title", label)}
 
 plot_cmd <- function (cmd, param)
