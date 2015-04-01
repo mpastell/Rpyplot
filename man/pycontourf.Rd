@@ -23,6 +23,8 @@ Filled contour using pyplot
 \examples{
 x <- 1:nrow(volcano)*.2
 y <- 1:ncol(volcano)*.5
-pycontourf(x, y, volcano, show=T)
+pycontourf(x, y, volcano)
+if (interactive())
+   pyshow()
 }
 

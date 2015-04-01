@@ -1,2 +1,3 @@
-PKG_CXXFLAGS=-I"C:/Anaconda/include" -I"C:/Anaconda/PCBuild"
-PKG_LIBS=-L"C:/Anaconda/libs"  -L"C:/Anaconda/libs/python27.lib" -lpython27
+PYTHON= $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript" -e "library(findpython);cat(dirname(findpython::find_python_cmd(minimum_version='2.7', maximum_version = '2.7')))")
+PKG_CXXFLAGS=-I"$(PYTHON)/include" -I"$(PYTHON)/PCBuild" 
+PKG_LIBS= -L"$(PYTHON)/libs" -L"$(PYTHON)/libs/python27.lib" -lpython27

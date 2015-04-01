@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{pyplot}
 \alias{pyplot}
-\title{Plot x vs y}
+\title{Plot x vs y using pyplot.plot}
 \usage{
 pyplot(x, y = NULL, args = NULL, show = FALSE)
 }
@@ -27,6 +27,7 @@ pyfigure()
 pyplot(x, sin(x)^2)
 xlabel("x")
 ylabel("$sin(x)^2$")
-pyshow()
+if(interactive())
+   pyshow()
 }
 

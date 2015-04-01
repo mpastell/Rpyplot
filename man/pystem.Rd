@@ -21,6 +21,7 @@ Plot stem plot using pyplot
 \examples{
 x = seq(0, pi, length=20)
 pystem(x, sin(x))
-pyshow()
+if(interactive())
+   pyshow()
 }
 

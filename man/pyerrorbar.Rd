@@ -27,6 +27,7 @@ x = seq(0, 2*pi, length=50)
 xerr = rep(0.05, length(x)) #absolute error
 yerr = sin(x)*0.1 #relative error
 pyerrorbar(x, sin(x), xerr, yerr, args=" fmt='o', ecolor='red' ")
-pyshow()
+if (interactive())
+   pyshow()
 }
 

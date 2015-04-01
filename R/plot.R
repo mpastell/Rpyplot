@@ -1,4 +1,4 @@
-#' Plot x vs y
+#' Plot x vs y using pyplot.plot
 #' 
 #' Plot 2D line plots and scatter plots using pyplot.plot. You can interact with the plots using matplotlib tools
 #' after calling pyshow() (=pyplot.show)  
@@ -15,7 +15,8 @@
 #' pyplot(x, sin(x)^2)
 #' xlabel("x")
 #' ylabel("$sin(x)^2$")
-#' pyshow()
+#' if(interactive())
+#'    pyshow()
 #' @export
 pyplot <- function(x,y=NULL, args=NULL, show=FALSE){
   if (is.null(y))
@@ -46,11 +47,12 @@ pyplot <- function(x,y=NULL, args=NULL, show=FALSE){
 #' Plot stem plot using pyplot
 #' 
 #' @inheritParams pyplot
-#' @export
 #' @examples
 #' x = seq(0, pi, length=20)
 #' pystem(x, sin(x))
-#' pyshow()
+#' if(interactive())
+#'    pyshow()
+#' @export
 pystem <- function(x,y=NULL, args=NULL, show=FALSE){
   if (is.null(y))
   {
@@ -84,7 +86,8 @@ pystem <- function(x,y=NULL, args=NULL, show=FALSE){
 #' xerr = rep(0.05, length(x)) #absolute error
 #' yerr = sin(x)*0.1 #relative error
 #' pyerrorbar(x, sin(x), xerr, yerr, args=" fmt='o', ecolor='red' ")
-#' pyshow()
+#' if (interactive())
+#'    pyshow()
 #' @export
 pyerrorbar <- function(x, y, xerr, yerr, args=NULL, show=FALSE)
 {
@@ -110,7 +113,9 @@ pyerrorbar <- function(x, y, xerr, yerr, args=NULL, show=FALSE)
 #' @examples
 #' x <- 1:nrow(volcano)*.2
 #' y <- 1:ncol(volcano)*.5
-#' pycontourf(x, y, volcano, show=T)
+#' pycontourf(x, y, volcano)
+#' if (interactive())
+#'    pyshow()
 #' @export
 pycontourf <- function(x, y, z, args=NULL, show=FALSE)
 {
