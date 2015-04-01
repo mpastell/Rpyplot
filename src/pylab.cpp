@@ -30,6 +30,8 @@ void initialize_python() {
 #ifndef WIN32
     dlopen("libpython2.7.so", RTLD_NOW | RTLD_GLOBAL);
 #endif
+    //wchar_t * name = L"python3.4";
+    Py_SetProgramName((char*)"python");
     Py_Initialize();
     pyrun("import matplotlib");
     //pyrun("matplotlib.use('Qt4Agg')");

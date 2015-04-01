@@ -1,6 +1,7 @@
 # History files
 .Rhistory
 .Rapp.history
+.RData
 README.html
 
 # Example code in package build process
@@ -15,4 +16,5 @@ vignettes/*.pdf
 
 *.so
 *.o
+*.dll
 .Rproj.user

@@ -14,7 +14,7 @@ library(devtools)
 install_github("mpastell/Rpyplot")
 ```
 
-If that doesn't work you can adjust `src/Makevars` or `src/Makevars.win` to match your Python installation.
+You'll need to have Python with headers (python-dev in Ubuntu) and matplotlib installed and in your path.
 
 ## Use
 
