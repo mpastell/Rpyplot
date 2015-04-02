@@ -143,9 +143,18 @@ pycontourf <- function(x, y, z, args=NULL, show=FALSE)
     pyshow()
 }
 
+#' Show figures
+#' Run pyplot.show(). This will open all created figure windows and hang R before all windows are closed.
 #' @export
 pyshow <- function(){pyrun("plt.show()")}
 
+
+#' Create new figure
+#' 
+#' calls pyplot.figure().
+#' 
+#' @param num figure number
+#' 
 #' @export
 pyfigure <- function(num=NULL){
   if (is.null(num))
@@ -158,12 +167,27 @@ pyfigure <- function(num=NULL){
   pyrun(cmd)
 }
 
+#' Add x-axis label
+#' 
+#' @param label Axis label as text
+#' 
 #' @export
 xlabel <- function(label){plot_cmd("xlabel", label)}
+
+
+#' Add y-axis label
+#' 
+#' @param label Axis label as text
+#' 
 #' @export
 ylabel <- function(label){plot_cmd("ylabel", label)}
+
+#' Add plot title
+#' 
+#' @param title plot title as text
+#' 
 #' @export
-pytitle <- function(label){plot_cmd("title", label)}
+pytitle <- function(title){plot_cmd("title", title)}
 
 plot_cmd <- function (cmd, param)
 {

@@ -3,6 +3,6 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
-  packageStartupMessage("Initializing Python\n")
+  #packageStartupMessage("Initializing Python\n")
   initialize_python()
 }
