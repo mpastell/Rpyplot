@@ -11,6 +11,22 @@ typedef Rcpp::XPtr<PyObject> PyList;
 
 //See http://gallery.rcpp.org/articles/rcpp-python/
 
+//Redirection from https://github.com/wush978/Rython
+static PyObject* redirection_stdoutredirect(PyObject* self, PyObject *args) {
+  const char* string;
+  if (!PyArg_ParseTuple(args, "s", &string))
+    return NULL;
+  Rcpp::Rcout << string;
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+PyMethodDef RedirectionMethods[] = {
+  {"stdoutredirect", redirection_stdoutredirect, METH_VARARGS, 
+    "stdout redirection helper"},
+  {NULL, NULL, 0, NULL}
+};
+
 
 //' Run python code
 //'
@@ -44,6 +60,7 @@ void initialize_python() {
   Py_SetProgramName((char*)"python");
 #endif
     Py_Initialize();
+    Py_InitModule("redirection", RedirectionMethods);
     pyrun("import matplotlib");
     //pyrun("matplotlib.use('Qt4Agg')");
     pyrun("import matplotlib.pyplot as plt");
