@@ -18,24 +18,25 @@
 #' if(interactive())
 #'    pyshow()
 #' @export
-pyplot <- function(x,y=NULL, args=NULL, show=FALSE){
-  if (is.null(y))
+pyplot <- function(x, y, args, show=FALSE){
+  if (missing(y))
   {
-    numvec_to_python("x", x)
-    cmd = "x"
+    plotvar("x", x)
+    cmd = "_pvars['x']"
   }
   else{
-    numvec_to_python("x", x)
-    numvec_to_python("y", y)
-    cmd = "x,y"
+    plotvar("x", x)
+    plotvar("y", y)
+    cmd = "_pvars['x'],_pvars['y']"
   }
   
-  if (!is.null(args))
+  if (!missing(args))
   {
     cmd = paste(cmd, ",", args)
   }
   
   pyrun(paste("plt.plot(", cmd ,")"))
+  pyrun("del(_pvars)")
   
   if (show)
     pyshow()  
@@ -54,23 +55,25 @@ pyplot <- function(x,y=NULL, args=NULL, show=FALSE){
 #'    pyshow()
 #' @export
 pystem <- function(x,y=NULL, args=NULL, show=FALSE){
-  if (is.null(y))
+  if (missing(y))
   {
-    numvec_to_python("x", x)
-    cmd = "x"
+    plotvar("x", x)
+    cmd = "_pvars['x']"
   }
   else{
-    numvec_to_python("x", x)
-    numvec_to_python("y", y)
-    cmd = "x,y"
+    plotvar("x", x)
+    plotvar("y", y)
+    cmd = "_pvars['x'],_pvars['y']"
   }
   
-  if (!is.null(args))
+  if (!missing(args))
   {
     cmd = paste(cmd, ",", args)
   }
   
+  
   pyrun(paste("plt.stem(", cmd ,")"))
+  pyrun("del(_pvars)")
   
   if (show)
     pyshow()  
@@ -91,16 +94,19 @@ pystem <- function(x,y=NULL, args=NULL, show=FALSE){
 #' @export
 pyerrorbar <- function(x, y, xerr, yerr, args=NULL, show=FALSE)
 {
-  numvec_to_python("x", x)
-  numvec_to_python("y", y)
-  numvec_to_python("xerr", xerr)
-  numvec_to_python("yerr", yerr)
-  cmd = "x, y, xerr=xerr, yerr=yerr"
+  #Copy data to _pvars dictionary
+  plotvar("x", x) 
+  plotvar("y", y)
+  plotvar("xerr", xerr)
+  plotvar("yerr", yerr)
+  
+  cmd = "_pvars['x'], _pvars['y'], xerr=_pvars['xerr'], yerr=_pvars['yerr']"
   if (!is.null(args))
     cmd = paste(cmd, ",", args)
   
   pyrun(paste("plt.errorbar(", cmd ,")"))
-  
+  pyrun("del(_pvars)")
+   
   if (show)
     pyshow()
 }
@@ -111,33 +117,26 @@ pyerrorbar <- function(x, y, xerr, yerr, args=NULL, show=FALSE)
 #' @param z array of z-axis coordinates
 #' @inheritParams pyplot
 #' @examples
-#' x <- 1:nrow(volcano)*.2
-#' y <- 1:ncol(volcano)*.5
+#' x <- 1:ncol(volcano)*.2
+#' y <- 1:nrow(volcano)*.5
 #' pycontourf(x, y, volcano)
 #' if (interactive())
 #'    pyshow()
 #' @export
-pycontourf <- function(x, y, z, args=NULL, show=FALSE)
+pycontourf <- function(x, y, z, args, show=FALSE)
 {
-  numvec_to_python("x", x)
-  numvec_to_python("y", y)
-  
-  #Array moved to Python as list and converted to 
-  #NumPy array
-  nr = nrow(z)
-  nc = ncol(z)
-  numvec_to_python("z", z)
-  numvec_to_python("z_size", c(nr, nc))
-  pyrun("import numpy as np")
-  pyrun("zn = (np.reshape(z, z_size, order='F')).T")
-  
-  cmd = "x, y, zn"
-  if (!is.null(args))
+  plotvar("x", x)
+  plotvar("y", y)
+  pyvar("__zplot", z) #No method to move matrices to _pvars defined yet
+ 
+  cmd = "_pvars['x'], _pvars['y'], __zplot"
+  if (!missing(args))
     cmd = paste(cmd, ",", args)
   
   pyrun(paste("plt.contourf(", cmd, ")"))
   pyrun("plt.colorbar()")
-  
+  pyrun("del(_pvars)")
+  pyrun("del(__zplot)")
   
   if (show)
     pyshow()

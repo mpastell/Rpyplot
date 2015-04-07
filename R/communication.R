@@ -15,6 +15,18 @@ pyvar <- function(name, x)
 #' Generics defined in C++
 topy <- function(x, name) UseMethod("topy")
 
+topy.matrix <- function(z, name)
+{
+  #Array moved to Python as list and converted to 
+  #NumPy array
+  nr = nrow(z)
+  nc = ncol(z)
+  topy.numeric(z, name)
+  
+  #numvec_to_python(paste(name,"z_size", sep=""), c(nr, nc))
+  pyrun("import numpy as np")
+  pyrun(sprintf("%s = (np.reshape(%s, [%i, %i], order='F'))", name, name, nr, nc))  
+}
 
 #' Copy variables to a Python dictionary
 #' 

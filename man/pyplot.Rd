@@ -4,7 +4,7 @@
 \alias{pyplot}
 \title{Plot x vs y using pyplot.plot}
 \usage{
-pyplot(x, y = NULL, args = NULL, show = FALSE)
+pyplot(x, y, args, show = FALSE)
 }
 \arguments{
 \item{x}{A Numeric vector}
