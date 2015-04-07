@@ -114,6 +114,20 @@ PyObject* numvec_to_list(NumericVector x){
     return(xpy);
 }
 
+PyObject* charvec_to_list(std::vector< std::string > strings){
+    int n = strings.size();
+    PyObject *xpy = PyList_New(n);
+    PyObject *s;
+    
+    for (int i=0; i<n; i++)
+    {
+      s = PyUnicode_FromString(strings[i].c_str());
+      PyList_SetItem(xpy, i, s);
+    }   
+    return(xpy);
+}
+
+
 //' Push data to python __main__ namespace
 //' 
 //' @param name Python variable name as string
@@ -130,4 +144,127 @@ void numvec_to_python(std::string name, NumericVector x){
     PyObject *m = PyImport_AddModule("__main__");
     PyObject *main = PyModule_GetDict(m);
     PyDict_SetItemString(main, name.c_str(), xpy);
+}
+
+//' @export
+//[[Rcpp::export]]
+void charvec_to_python(std::string name, std::vector< std::string > strings){
+    PyObject *xpy = charvec_to_list(strings);
+    PyObject *m = PyImport_AddModule("__main__");
+    PyObject *main = PyModule_GetDict(m);
+    PyDict_SetItemString(main, name.c_str(), xpy);
+}
+
+
+//' Get numeric vector from python __main__ namespace.
+//' 
+//' The data retrieved from Python has to be a list of numbers.
+//' 
+//' @param name Python variable name
+//' 
+//' @export
+//[[Rcpp::export]]
+NumericVector numvec_to_R(std::string name){
+    PyObject *m = PyImport_AddModule("__main__");
+    PyObject *main = PyModule_GetDict(m);
+    PyObject *list = PyDict_GetItemString(main, name.c_str());
+    
+    if (list == NULL)
+    {
+      Rcout << "Error: Unknown Python variable\n";
+      return NumericVector(0);
+    }
+    
+    int n = (int)PyList_Size(list);
+    NumericVector x(n);
+    
+    for (int i=0; i<n; i++)
+    {
+      x(i) = PyFloat_AsDouble(PyList_GetItem(list, i));
+      //Rcout << x(i) << std::endl;
+    }  
+    return x;
+}
+
+//' Copy list of strings from Python to R character vector
+//' 
+//' @examples
+//'
+//'pyrun("l = ['a', 'b']")
+//'pyrun("print(l)")
+//'charvec_to_R("l")
+//'pyrun("l2 = [u'a', u'b']")
+//'charvec_to_R("l2")
+//'@export
+//[[Rcpp::export]]
+std::vector<std::string> charvec_to_R(std::string name){
+    PyObject *m = PyImport_AddModule("__main__");
+    PyObject *main = PyModule_GetDict(m);
+    PyObject *list = PyDict_GetItemString(main, name.c_str());
+    
+    if (list == NULL)
+    {
+      Rcout << "Error: Unknown Python variable\n";
+      std::vector< std::string > x(0);
+      return x;
+    }
+    
+    int n = (int)PyList_Size(list);
+    std::vector< std::string > x(n);
+    PyObject *item;
+    
+    for (int i=0; i<n; i++)
+    {
+
+      item = PyList_GetItem(list, i);
+#if PY_MAJOR_VERSION >= 3
+        x[i] = PyBytes_AsString(PyUnicode_AsUTF8String(item));
+#else
+    if (PyString_Check(item)){
+          x[i] = PyString_AsString(item);
+      } else
+      {
+        x[i] = PyBytes_AsString(PyUnicode_AsUTF8String(item));
+      }
+#endif
+    }
+  //Rcout << x[i] << std::endl;
+    return x;
+}
+
+//Add NumericVector to dict in Python
+//Used to "hide" variables for plotting
+//[[Rcpp::export]]
+void num_to_dict(std::string name, NumericVector x, std::string dictname){
+    PyObject *xpy = numvec_to_list(x);
+    PyObject *m = PyImport_AddModule("__main__");
+    PyObject *main = PyModule_GetDict(m);
+  
+    PyObject *dict = PyDict_GetItemString(main, dictname.c_str());
+    if (dict==NULL || !PyDict_Check(dict))// !PyDict_Check(dict)) //Create new if dict doesn't exist
+    {
+      dict = PyDict_New();
+    }
+    
+    PyDict_SetItemString(dict, name.c_str(), xpy);
+    PyDict_SetItemString(main, dictname.c_str() , dict);  
+}
+
+//Add character vector to dict in Python
+//Used to "hide" variables for plotting
+//[[Rcpp::export]]
+void char_to_dict(std::string name, std::vector<std::string>  x, std::string dictname){
+    PyObject *xpy = charvec_to_list(x);
+    PyObject *m = PyImport_AddModule("__main__");
+    PyObject *main = PyModule_GetDict(m);
+    
+    PyObject *dict = PyDict_GetItemString(main, dictname.c_str());
+    
+    if (dict==NULL || !PyDict_Check(dict)) //Create new if dict doesn't exist
+    {
+      dict = PyDict_New();
+    }
+    
+    PyDict_SetItemString(dict, name.c_str(), xpy);
+    PyDict_SetItemString(main, dictname.c_str() , dict);
 }

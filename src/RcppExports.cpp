@@ -44,3 +44,60 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// charvec_to_python
+void charvec_to_python(std::string name, std::vector< std::string > strings);
+RcppExport SEXP Rpyplot_charvec_to_python(SEXP nameSEXP, SEXP stringsSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    Rcpp::traits::input_parameter< std::vector< std::string > >::type strings(stringsSEXP);
+    charvec_to_python(name, strings);
+    return R_NilValue;
+END_RCPP
+}
+// numvec_to_R
+NumericVector numvec_to_R(std::string name);
+RcppExport SEXP Rpyplot_numvec_to_R(SEXP nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    __result = Rcpp::wrap(numvec_to_R(name));
+    return __result;
+END_RCPP
+}
+// charvec_to_R
+std::vector<std::string> charvec_to_R(std::string name);
+RcppExport SEXP Rpyplot_charvec_to_R(SEXP nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    __result = Rcpp::wrap(charvec_to_R(name));
+    return __result;
+END_RCPP
+}
+// num_to_dict
+void num_to_dict(std::string name, NumericVector x, std::string dictname);
+RcppExport SEXP Rpyplot_num_to_dict(SEXP nameSEXP, SEXP xSEXP, SEXP dictnameSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dictname(dictnameSEXP);
+    num_to_dict(name, x, dictname);
+    return R_NilValue;
+END_RCPP
+}
+// char_to_dict
+void char_to_dict(std::string name, std::vector<std::string> x, std::string dictname);
+RcppExport SEXP Rpyplot_char_to_dict(SEXP nameSEXP, SEXP xSEXP, SEXP dictnameSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dictname(dictnameSEXP);
+    char_to_dict(name, x, dictname);
+    return R_NilValue;
+END_RCPP
+}

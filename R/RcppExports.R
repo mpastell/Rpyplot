@@ -35,3 +35,41 @@ numvec_to_python <- function(name, x) {
     invisible(.Call('Rpyplot_numvec_to_python', PACKAGE = 'Rpyplot', name, x))
 }
 
+#' @export
+charvec_to_python <- function(name, strings) {
+    invisible(.Call('Rpyplot_charvec_to_python', PACKAGE = 'Rpyplot', name, strings))
+}
+
+#' Get numeric vector from python __main__ namespace.
+#' 
+#' The data retrieved from Python has to be a list of numbers.
+#' 
+#' @param name Python variable name
+#' 
+#' @export
+numvec_to_R <- function(name) {
+    .Call('Rpyplot_numvec_to_R', PACKAGE = 'Rpyplot', name)
+}
+
+#' Copy list of strings from Python to R character vector
+#' 
+#' @examples
+#'
+#'pyrun("l = ['a', 'b']")
+#'pyrun("print(l)")
+#'charvec_to_R("l")
+#'pyrun("l2 = [u'a', u'b']")
+#'charvec_to_R("l2")
+#'@export
+charvec_to_R <- function(name) {
+    .Call('Rpyplot_charvec_to_R', PACKAGE = 'Rpyplot', name)
+}
+
+num_to_dict <- function(name, x, dictname) {
+    invisible(.Call('Rpyplot_num_to_dict', PACKAGE = 'Rpyplot', name, x, dictname))
+}
+
+char_to_dict <- function(name, x, dictname) {
+    invisible(.Call('Rpyplot_char_to_dict', PACKAGE = 'Rpyplot', name, x, dictname))
+}
+
