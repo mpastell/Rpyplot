@@ -1,6 +1,8 @@
 #include <Rcpp.h>
 #include <Python.h>
 #include <stdio.h>
+#include "redirect.hpp"
+
 #ifndef WIN32
 #include <dlfcn.h>
 #endif
@@ -15,45 +17,13 @@ using namespace Rcpp;
 //typedef Rcpp::XPtr<PyObject> PyList; 
 
 
-
-//Redirection based on https://github.com/wush978/Rython
-static PyObject* stdoutredirect(PyObject* self, PyObject *args) {
-  const char* string;
-  if (!PyArg_ParseTuple(args, "s", &string))
-    return NULL;
-  Rcpp::Rcout << string;
-  Py_RETURN_NONE;
-}
-
-PyMethodDef redirect_pystdout[] = {
-  {"_Rcout", (PyCFunction)stdoutredirect, METH_VARARGS, 
-    "stdout redirection helper"},
-  {NULL, NULL, 0, NULL}
-};
-
-
-static PyObject* stderrredirect(PyObject* self, PyObject *args) {
-  const char* string;
-  if (!PyArg_ParseTuple(args, "s", &string))
-    return NULL;
-  Rcpp::Rcerr << string;
-  Py_RETURN_NONE;
-}
-
-PyMethodDef redirect_pystderr[] = {
-  {"_Rcerr", (PyCFunction)stderrredirect, METH_VARARGS, 
-    "stderr redirection helper"},
-  {NULL, NULL, 0, NULL}
-};
-
-
 //' Run python code
 //'
 //' Runs Python code in namespace __main__ . 
 //' 
 //' @param command Python code to execute as string
 //' @examples
-//' pyrun("print range(5)")
+//' pyrun("print(range(5))")
 //' @export
 //[[Rcpp::export]]
 void pyrun(std::string command){
@@ -144,7 +114,6 @@ void numvec_to_python(NumericVector x, std::string name){
     PyObject *main = PyModule_GetDict(m);
     PyDict_SetItemString(main, name.c_str(), xpy);
     Py_CLEAR(xpy);
-    Py_CLEAR(main);
 }
 
 
@@ -155,7 +124,6 @@ void charvec_to_python(std::vector< std::string > strings, std::string name){
     PyObject *main = PyModule_GetDict(m);
     PyDict_SetItemString(main, name.c_str(), xpy);
     Py_CLEAR(xpy);
-    Py_CLEAR(main);
 }
 
 

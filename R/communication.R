@@ -1,7 +1,17 @@
 
-
 #' Copy variable from R to Python
+#' 
+#' @param name variable name in python
+#' @param x R data, numeric and character vectors and numeric matrices are currently supported.
 #'
+#' @examples
+#' pyvar("x", 1:10)
+#' pyprint(x)
+#' pyvar("s", c("Hello", "R!")) 
+#' pyprint(s)
+#' pyvar(volcano) #Matrix
+#' pyprint(volcano)
+#' 
 #' @export
 pyvar <- function(name, x)
 {
@@ -12,7 +22,10 @@ pyvar <- function(name, x)
   topy(x, name)
 }
 
-#' Generics defined in C++
+# Generic method to copy data to Python
+# 
+# Some of the methods are defined in C++
+# 
 topy <- function(x, name) UseMethod("topy")
 
 topy.matrix <- function(z, name)
@@ -28,11 +41,10 @@ topy.matrix <- function(z, name)
   pyrun(sprintf("%s = (np.reshape(%s, [%i, %i], order='F'))", name, name, nr, nc))  
 }
 
-#' Copy variables to a Python dictionary
-#' 
+# Copy variables to a Python dictionary
 pydict <- function(x, name, dictname) UseMethod("pydict") #Generics defined in pylab.cpp
 
-#' @export
+# Copy variables to _pvars dictionary for plotting
 plotvar <- function(name, x)
 {
   if (missing(x)){

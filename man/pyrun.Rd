@@ -13,6 +13,6 @@ pyrun(command)
 Runs Python code in namespace __main__ .
 }
 \examples{
-pyrun("print range(5)")
+pyrun("print(range(5))")
 }
 

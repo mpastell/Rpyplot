@@ -7,7 +7,7 @@
 #' 
 #' @param command Python code to execute as string
 #' @examples
-#' pyrun("print range(5)")
+#' pyrun("print(range(5))")
 #' @export
 pyrun <- function(command) {
     invisible(.Call('Rpyplot_pyrun', PACKAGE = 'Rpyplot', command))

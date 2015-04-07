@@ -2,7 +2,6 @@
 
 export(charvec_to_R)
 export(numvec_to_R)
-export(plotvar)
 export(pycontourf)
 export(pyerrorbar)
 export(pyfigure)
