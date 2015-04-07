@@ -34,24 +34,24 @@ BEGIN_RCPP
 END_RCPP
 }
 // numvec_to_python
-void numvec_to_python(std::string name, NumericVector x);
-RcppExport SEXP Rpyplot_numvec_to_python(SEXP nameSEXP, SEXP xSEXP) {
+void numvec_to_python(NumericVector x, std::string name);
+RcppExport SEXP Rpyplot_numvec_to_python(SEXP xSEXP, SEXP nameSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    numvec_to_python(name, x);
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    numvec_to_python(x, name);
     return R_NilValue;
 END_RCPP
 }
 // charvec_to_python
-void charvec_to_python(std::string name, std::vector< std::string > strings);
-RcppExport SEXP Rpyplot_charvec_to_python(SEXP nameSEXP, SEXP stringsSEXP) {
+void charvec_to_python(std::vector< std::string > strings, std::string name);
+RcppExport SEXP Rpyplot_charvec_to_python(SEXP stringsSEXP, SEXP nameSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
     Rcpp::traits::input_parameter< std::vector< std::string > >::type strings(stringsSEXP);
-    charvec_to_python(name, strings);
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    charvec_to_python(strings, name);
     return R_NilValue;
 END_RCPP
 }

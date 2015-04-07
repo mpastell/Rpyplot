@@ -137,18 +137,17 @@ PyObject* charvec_to_list(std::vector< std::string > strings){
 //' numvec_to_python("l", 1:10)
 //' pyrun("print l")
 //' 
-//' @export
-//[[Rcpp::export]]
-void numvec_to_python(std::string name, NumericVector x){
+//[[Rcpp::export(name="topy.numeric")]]
+void numvec_to_python(NumericVector x, std::string name){
     PyObject *xpy = numvec_to_list(x);
     PyObject *m = PyImport_AddModule("__main__");
     PyObject *main = PyModule_GetDict(m);
     PyDict_SetItemString(main, name.c_str(), xpy);
 }
 
-//' @export
-//[[Rcpp::export]]
-void charvec_to_python(std::string name, std::vector< std::string > strings){
+
+//[[Rcpp::export(name="topy.character")]]
+void charvec_to_python(std::vector< std::string > strings, std::string name){
     PyObject *xpy = charvec_to_list(strings);
     PyObject *m = PyImport_AddModule("__main__");
     PyObject *main = PyModule_GetDict(m);

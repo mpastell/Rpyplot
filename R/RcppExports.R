@@ -30,14 +30,12 @@ finalize_python <- function() {
 #' numvec_to_python("l", 1:10)
 #' pyrun("print l")
 #' 
-#' @export
-numvec_to_python <- function(name, x) {
-    invisible(.Call('Rpyplot_numvec_to_python', PACKAGE = 'Rpyplot', name, x))
+topy.numeric <- function(x, name) {
+    invisible(.Call('Rpyplot_numvec_to_python', PACKAGE = 'Rpyplot', x, name))
 }
 
-#' @export
-charvec_to_python <- function(name, strings) {
-    invisible(.Call('Rpyplot_charvec_to_python', PACKAGE = 'Rpyplot', name, strings))
+topy.character <- function(strings, name) {
+    invisible(.Call('Rpyplot_charvec_to_python', PACKAGE = 'Rpyplot', strings, name))
 }
 
 #' Get numeric vector from python __main__ namespace.

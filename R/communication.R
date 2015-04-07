@@ -1,14 +1,4 @@
-topy <- function(x, name) UseMethod("topy")
 
-topy.numeric  <- function(x, name)
-{
-  numvec_to_python(name, x)
-}
-
-topy.character <- function(x, name)
-{
-  charvec_to_python(name, x)
-}
 
 #' Copy variable from R to Python
 #'
@@ -19,9 +9,11 @@ pyvar <- function(name, x)
     x <- name
     name <- deparse(substitute(name))
   }
-  
   topy(x, name)
-} 
+}
+
+#' Generics defined in C++
+topy <- function(x, name) UseMethod("topy")
 
 
 #' Copy variables to a Python dictionary
@@ -49,14 +41,15 @@ plotvar <- function(name, x)
 #' pyprint(x)
 #' pyprint("dir()") #You can quote Python commands
 #' @export
-pyprint <- function(name)
+pyprint <- function(x)
 {
-  if (is.character(name)){
-    cmd = name
+  cmd <- substitute(x)
+  if (is.character(cmd))
+  {
+    pyrun(paste("print(", cmd, ")")) 
   }
-  else{
-    cmd = deparse(substitute(name))
+  else
+  {
+    pyrun(paste("print(", deparse(cmd), ")")) 
   }
-  
-  pyrun(paste("print(", cmd, ")"))   
 }

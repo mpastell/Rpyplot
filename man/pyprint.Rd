@@ -4,7 +4,7 @@
 \alias{pyprint}
 \title{Print python object}
 \usage{
-pyprint(name)
+pyprint(x)
 }
 \arguments{
 \item{name}{name of the python object}
@@ -15,5 +15,6 @@ Print python object
 \examples{
 pyvar("x", 1:10)
 pyprint(x)
+pyprint("dir()") #You can quote Python commands
 }
 
