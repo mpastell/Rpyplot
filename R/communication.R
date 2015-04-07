@@ -23,6 +23,30 @@ pyvar <- function(name, x)
   topy(x, name)
 }
 
+to_pydict <- function(x, name, dictname="_pvars") UseMethod("to_pydict") 
+
+to_pydict.numeric <- function(x, name, dictname="_pvars") 
+{
+  num_to_dict(name, x, dictname)  
+}
+
+to_pydict.character <- function(x, name, dictname="_pvars") 
+{
+  char_to_dict(name, x, dictname)  
+}
+
+#' @export
+plotvar <- function(name, x)
+{
+  if (missing(x)){
+    x <- name
+    name <- deparse(substitute(name))
+  }
+  
+  to_pydict(x, name)
+}
+
+
 #' Print python object
 #' 
 #' @param name name of the python object

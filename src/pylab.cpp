@@ -227,8 +227,44 @@ std::vector<std::string> charvec_to_R(std::string name){
         x[i] = PyBytes_AsString(PyUnicode_AsUTF8String(item));
       }
 #endif
-  
+    }
   //Rcout << x[i] << std::endl;
-    }  
     return x;
+}
+
+//Add NumericVector to dict in Python
+//Used to "hide" variables for plotting
+//[[Rcpp::export]]
+void num_to_dict(std::string name, NumericVector x, std::string dictname){
+    PyObject *xpy = numvec_to_list(x);
+    PyObject *m = PyImport_AddModule("__main__");
+    PyObject *main = PyModule_GetDict(m);
+  
+    PyObject *dict = PyDict_GetItemString(main, dictname.c_str());
+    if (dict==NULL || !PyDict_Check(dict))// !PyDict_Check(dict)) //Create new if dict doesn't exist
+    {
+      dict = PyDict_New();
+    }
+    
+    PyDict_SetItemString(dict, name.c_str(), xpy);
+    PyDict_SetItemString(main, dictname.c_str() , dict);  
+}
+
+//Add character vector to dict in Python
+//Used to "hide" variables for plotting
+//[[Rcpp::export]]
+void char_to_dict(std::string name, std::vector<std::string>  x, std::string dictname){
+    PyObject *xpy = charvec_to_list(x);
+    PyObject *m = PyImport_AddModule("__main__");
+    PyObject *main = PyModule_GetDict(m);
+    
+    PyObject *dict = PyDict_GetItemString(main, dictname.c_str());
+    
+    if (dict==NULL || !PyDict_Check(dict)) //Create new if dict doesn't exist
+    {
+      dict = PyDict_New();
+    }
+    
+    PyDict_SetItemString(dict, name.c_str(), xpy);
+    PyDict_SetItemString(main, dictname.c_str() , dict);
 }
