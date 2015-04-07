@@ -65,11 +65,11 @@ charvec_to_R <- function(name) {
     .Call('Rpyplot_charvec_to_R', PACKAGE = 'Rpyplot', name)
 }
 
-num_to_dict <- function(name, x, dictname) {
-    invisible(.Call('Rpyplot_num_to_dict', PACKAGE = 'Rpyplot', name, x, dictname))
+pydict.numeric <- function(x, name, dictname = "_pvars") {
+    invisible(.Call('Rpyplot_num_to_dict', PACKAGE = 'Rpyplot', x, name, dictname))
 }
 
-char_to_dict <- function(name, x, dictname) {
-    invisible(.Call('Rpyplot_char_to_dict', PACKAGE = 'Rpyplot', name, x, dictname))
+pydict.character <- function(x, name, dictname = "_pvars") {
+    invisible(.Call('Rpyplot_char_to_dict', PACKAGE = 'Rpyplot', x, name, dictname))
 }
 

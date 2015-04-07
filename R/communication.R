@@ -21,19 +21,12 @@ pyvar <- function(name, x)
   }
   
   topy(x, name)
-}
+} 
 
-to_pydict <- function(x, name, dictname="_pvars") UseMethod("to_pydict") 
 
-to_pydict.numeric <- function(x, name, dictname="_pvars") 
-{
-  num_to_dict(name, x, dictname)  
-}
-
-to_pydict.character <- function(x, name, dictname="_pvars") 
-{
-  char_to_dict(name, x, dictname)  
-}
+#' Copy variables to a Python dictionary
+#' 
+pydict <- function(x, name, dictname) UseMethod("pydict") #Generics defined in pylab.cpp
 
 #' @export
 plotvar <- function(name, x)
@@ -43,7 +36,7 @@ plotvar <- function(name, x)
     name <- deparse(substitute(name))
   }
   
-  to_pydict(x, name)
+  pydict(x, name)
 }
 
 
@@ -54,9 +47,16 @@ plotvar <- function(name, x)
 #' @examples
 #' pyvar("x", 1:10)
 #' pyprint(x)
-#' 
+#' pyprint("dir()") #You can quote Python commands
 #' @export
 pyprint <- function(name)
 {
-  pyrun(paste("print(", deparse(substitute(name)), ")"))   
+  if (is.character(name)){
+    cmd = name
+  }
+  else{
+    cmd = deparse(substitute(name))
+  }
+  
+  pyrun(paste("print(", cmd, ")"))   
 }

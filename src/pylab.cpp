@@ -232,10 +232,11 @@ std::vector<std::string> charvec_to_R(std::string name){
     return x;
 }
 
+
 //Add NumericVector to dict in Python
 //Used to "hide" variables for plotting
-//[[Rcpp::export]]
-void num_to_dict(std::string name, NumericVector x, std::string dictname){
+//[[Rcpp::export(name="pydict.numeric")]]
+void num_to_dict(NumericVector x, std::string name, std::string dictname = "_pvars"){
     PyObject *xpy = numvec_to_list(x);
     PyObject *m = PyImport_AddModule("__main__");
     PyObject *main = PyModule_GetDict(m);
@@ -252,8 +253,8 @@ void num_to_dict(std::string name, NumericVector x, std::string dictname){
 
 //Add character vector to dict in Python
 //Used to "hide" variables for plotting
-//[[Rcpp::export]]
-void char_to_dict(std::string name, std::vector<std::string>  x, std::string dictname){
+//[[Rcpp::export(name="pydict.character")]]
+void char_to_dict(std::vector<std::string>  x, std::string name, std::string dictname = "_pvars"){
     PyObject *xpy = charvec_to_list(x);
     PyObject *m = PyImport_AddModule("__main__");
     PyObject *main = PyModule_GetDict(m);
