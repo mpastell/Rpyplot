@@ -110,7 +110,7 @@ PyObject* numvec_to_list(NumericVector x){
       f = PyFloat_FromDouble(x[i]);
       //std::cout << i << "\n";
       PyList_SetItem(xpy, i, f);
-    }   
+    }
     return(xpy);
 }
 
@@ -143,6 +143,8 @@ void numvec_to_python(NumericVector x, std::string name){
     PyObject *m = PyImport_AddModule("__main__");
     PyObject *main = PyModule_GetDict(m);
     PyDict_SetItemString(main, name.c_str(), xpy);
+    Py_CLEAR(xpy);
+    Py_CLEAR(main);
 }
 
 
@@ -152,6 +154,8 @@ void charvec_to_python(std::vector< std::string > strings, std::string name){
     PyObject *m = PyImport_AddModule("__main__");
     PyObject *main = PyModule_GetDict(m);
     PyDict_SetItemString(main, name.c_str(), xpy);
+    Py_CLEAR(xpy);
+    Py_CLEAR(main);
 }
 
 
@@ -181,7 +185,8 @@ NumericVector numvec_to_R(std::string name){
     {
       x(i) = PyFloat_AsDouble(PyList_GetItem(list, i));
       //Rcout << x(i) << std::endl;
-    }  
+    }
+    
     return x;
 }
 
