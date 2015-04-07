@@ -1,4 +1,9 @@
+#You need to have libpythonxx.a installed
+#pip install wheel
+#Get the correct libpython from http://www.lfd.uci.edu/~gohlke/pythonlibs/#libpython
+#e.g.
+#pip install http://www.lfd.uci.edu/~gohlke/pythonlibs/6icuform/libpython-3.4.3-cp34-none-win_amd64.whl
 PYTHON = $(shell "python" -c "import os;import sys;print(os.path.dirname(sys.executable))")
 PYVER = $(shell "python" -c "import sys;print(str(sys.version_info[0]) + str(sys.version_info[1]))")
-PKG_CXXFLAGS=-I"$(PYTHON)\include" -I"$(PYTHON)\PCBuild" 
-PKG_LIBS= -L"$(PYTHON)\libs" -L"$(PYTHON)\libs\python$(PYVER).lib" -lpython$(PYVER)
+PKG_CXXFLAGS=-I"$(PYTHON)\include" -I"$(PYTHON)\PCBuild" -DMS_WIN64
+PKG_LIBS= -L"$(PYTHON)\libs" -lpython$(PYVER) -DMS_WIN64

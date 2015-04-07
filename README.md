@@ -11,14 +11,44 @@ I often use Python and [matplotlib](http://matplotlib.org/) for exploring measur
 
 ## Install
 
-Install using devtools
+Install using devtools.
+
+**Ubuntu**
+
+You'll need to have Python with headers (python-dev in Ubuntu) and matplotlib:
+
+
+```bash
+sudo apt-get install python-dev python-matplotlib
+
+```
+
+Use devtools to install from R.
+
 
 ```R
 library(devtools)
 install_github("mpastell/Rpyplot")
 ```
 
-You'll need to have Python with headers (python-dev in Ubuntu) and matplotlib installed and in your path. In Windows you'll need to have Rtools.
+**Windows**
+
+You'll need to have Rtools and Python with matplotlib installed and in your path. You'll also need to have libpythonXX.a in "$PYTHON\libs\".  You can use [libpython](http://www.lfd.uci.edu/~gohlke/pythonlibs/#libpython) from Christoph Gohlke's repository. Make sure you use the same architecture for R and Python.
+
+
+Install libpython using pip (the version needs to match the install Python version, the url below is for Python3.4)
+
+```
+pip install wheel
+pip install http://www.lfd.uci.edu/~gohlke/pythonlibs/6icuform/libpython-3.4.3-cp34-none-win_amd64.whl
+
+```
+
+```R
+library(devtools)
+install_github("mpastell/Rpyplot", args = "--no-multiarch")
+```
+
 
 ## Use
 

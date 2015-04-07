@@ -6,24 +6,43 @@
 #endif
 
 
+// For background info:
+// http://gallery.rcpp.org/articles/matplotlib-from-R/
+// http://gallery.rcpp.org/articles/rcpp-python/
+
 using namespace Rcpp;
-typedef Rcpp::XPtr<PyObject> PyList;
+//Can be used to return a pointer to a Python list, not used for now
+//typedef Rcpp::XPtr<PyObject> PyList; 
 
-//See http://gallery.rcpp.org/articles/rcpp-python/
 
-//Redirection from https://github.com/wush978/Rython
-static PyObject* redirection_stdoutredirect(PyObject* self, PyObject *args) {
+
+//Redirection based on https://github.com/wush978/Rython
+static PyObject* stdoutredirect(PyObject* self, PyObject *args) {
   const char* string;
   if (!PyArg_ParseTuple(args, "s", &string))
     return NULL;
   Rcpp::Rcout << string;
-  Py_INCREF(Py_None);
-  return Py_None;
+  Py_RETURN_NONE;
 }
 
-PyMethodDef RedirectionMethods[] = {
-  {"stdoutredirect", redirection_stdoutredirect, METH_VARARGS, 
+PyMethodDef redirect_pystdout[] = {
+  {"_Rcout", (PyCFunction)stdoutredirect, METH_VARARGS, 
     "stdout redirection helper"},
+  {NULL, NULL, 0, NULL}
+};
+
+
+static PyObject* stderrredirect(PyObject* self, PyObject *args) {
+  const char* string;
+  if (!PyArg_ParseTuple(args, "s", &string))
+    return NULL;
+  Rcpp::Rcerr << string;
+  Py_RETURN_NONE;
+}
+
+PyMethodDef redirect_pystderr[] = {
+  {"_Rcerr", (PyCFunction)stderrredirect, METH_VARARGS, 
+    "stderr redirection helper"},
   {NULL, NULL, 0, NULL}
 };
 
@@ -60,7 +79,16 @@ void initialize_python() {
   Py_SetProgramName((char*)"python");
 #endif
     Py_Initialize();
-    Py_InitModule("redirection", RedirectionMethods);
+    PyObject *m = PyImport_AddModule("__main__");
+    PyObject *main = PyModule_GetDict(m);
+    PyObject *f = PyCFunction_New(redirect_pystdout, (PyObject*)NULL);
+    PyObject *f2 = PyCFunction_New(redirect_pystderr, (PyObject*)NULL);
+    PyDict_SetItemString(main, "_Rcout",  f);
+    PyDict_SetItemString(main, "_Rcerr",  f2);
+    pyrun("class _StdoutCatcher:\n  def write(self, out):\n    _Rcout(out)");
+    pyrun("class _StderrCatcher:\n  def write(self, out):\n    _Rcerr(out)");
+    pyrun("import sys\nsys.stdout = _StdoutCatcher()");
+    pyrun("import sys\nsys.stderr = _StderrCatcher()");
     pyrun("import matplotlib");
     //pyrun("matplotlib.use('Qt4Agg')");
     pyrun("import matplotlib.pyplot as plt");
