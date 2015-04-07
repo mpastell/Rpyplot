@@ -2,6 +2,7 @@
 #include <Python.h>
 #include <stdio.h>
 #include "redirect.hpp"
+#include "converters.hpp"
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -69,35 +70,6 @@ void finalize_python() {
     Py_Finalize();
 }
 
-//Convert NumericVector to Python List
-PyObject* numvec_to_list(NumericVector x){
-    int n = x.length();
-    PyObject *xpy = PyList_New(n);
-    PyObject *f;
-    
-    for (int i=0; i<n; i++)
-    {
-      f = PyFloat_FromDouble(x[i]);
-      //std::cout << i << "\n";
-      PyList_SetItem(xpy, i, f);
-    }
-    return(xpy);
-}
-
-PyObject* charvec_to_list(std::vector< std::string > strings){
-    int n = strings.size();
-    PyObject *xpy = PyList_New(n);
-    PyObject *s;
-    
-    for (int i=0; i<n; i++)
-    {
-      s = PyUnicode_FromString(strings[i].c_str());
-      PyList_SetItem(xpy, i, s);
-    }   
-    return(xpy);
-}
-
-
 //' Push data to python __main__ namespace
 //' 
 //' @param name Python variable name as string
@@ -109,21 +81,12 @@ PyObject* charvec_to_list(std::vector< std::string > strings){
 //' 
 //[[Rcpp::export(name="topy.numeric")]]
 void numvec_to_python(NumericVector x, std::string name){
-    PyObject *xpy = numvec_to_list(x);
-    PyObject *m = PyImport_AddModule("__main__");
-    PyObject *main = PyModule_GetDict(m);
-    PyDict_SetItemString(main, name.c_str(), xpy);
-    Py_CLEAR(xpy);
+    to_main(name, to_list(x));
 }
-
 
 //[[Rcpp::export(name="topy.character")]]
 void charvec_to_python(std::vector< std::string > strings, std::string name){
-    PyObject *xpy = charvec_to_list(strings);
-    PyObject *m = PyImport_AddModule("__main__");
-    PyObject *main = PyModule_GetDict(m);
-    PyDict_SetItemString(main, name.c_str(), xpy);
-    Py_CLEAR(xpy);
+    to_main(name, to_list(strings));
 }
 
 
@@ -204,40 +167,16 @@ std::vector<std::string> charvec_to_R(std::string name){
     return x;
 }
 
-
 //Add NumericVector to dict in Python
 //Used to "hide" variables for plotting
 //[[Rcpp::export(name="pydict.numeric")]]
 void num_to_dict(NumericVector x, std::string name, std::string dictname = "_pvars"){
-    PyObject *xpy = numvec_to_list(x);
-    PyObject *m = PyImport_AddModule("__main__");
-    PyObject *main = PyModule_GetDict(m);
-  
-    PyObject *dict = PyDict_GetItemString(main, dictname.c_str());
-    if (dict==NULL || !PyDict_Check(dict))// !PyDict_Check(dict)) //Create new if dict doesn't exist
-    {
-      dict = PyDict_New();
-    }
-    
-    PyDict_SetItemString(dict, name.c_str(), xpy);
-    PyDict_SetItemString(main, dictname.c_str() , dict);  
+    add_to_dict(name, dictname, to_list(x));
 }
 
 //Add character vector to dict in Python
 //Used to "hide" variables for plotting
 //[[Rcpp::export(name="pydict.character")]]
 void char_to_dict(std::vector<std::string>  x, std::string name, std::string dictname = "_pvars"){
-    PyObject *xpy = charvec_to_list(x);
-    PyObject *m = PyImport_AddModule("__main__");
-    PyObject *main = PyModule_GetDict(m);
-    
-    PyObject *dict = PyDict_GetItemString(main, dictname.c_str());
-    
-    if (dict==NULL || !PyDict_Check(dict)) //Create new if dict doesn't exist
-    {
-      dict = PyDict_New();
-    }
-    
-    PyDict_SetItemString(dict, name.c_str(), xpy);
-    PyDict_SetItemString(main, dictname.c_str() , dict);
+    add_to_dict(name, dictname, to_list(x));
 }
