@@ -40,7 +40,7 @@ void to_main(std::string name, PyObject *pyobj)
 {
     PyObject *main = PyModule_GetDict(PyImport_AddModule("__main__"));
     PyDict_SetItemString(main, name.c_str(), pyobj);
-    Py_CLEAR(pyobj);
+    //Py_CLEAR(pyobj);
 }
 
 //Get data from __main__ namespace
