@@ -142,6 +142,202 @@ pycontourf <- function(x, y, z, args, show=FALSE)
     pyshow()
 }
 
+#' Plot a scatter plot using pyplot.scatter
+#' 
+#' Draw a scatter plot using matplotlib.pyplot.scatter
+#' 
+#' @param x numeric vector containing the x coordinates of points
+#' @param y numeric vector containing the y coordinates of points
+#' @param s numeric of either length 1 or \code{length(x)} indicating the size
+#'   of each point
+#' @param c color of the points (default: \code{"b"}), can be one of
+#'   \itemize{
+#'     \item{single character for basic built-in matplotlib colors, see
+#'       \url{http://matplotlib.org/api/colors_api.html#module-matplotlib.colors
+#'       }
+#'     }
+#'     \item{a numeric value between 0 and 1 as character, indicating gray
+#'       shade, e.g. \code{"0.75"}}
+#'     \item{hex string, e.g. \code{"#00ff00"} for green}
+#'     \item{numeric vector of length three, for RGB (red, green and blue, each
+#'       between 0 and 1)}
+#'     \item{numeric vector of length four, for RGBA (red, green, blue and
+#'       opacity, each between 0 and 1)}
+#'     \item{character string with HTML color name, e.g. \code{"slateblue"},
+#'       see \url{http://www.w3schools.com/html/html_colornames.asp}}
+#'   }
+#' @param marker single character indicating shape of the points (default:
+#'   \code{"o"}), see
+#'   \url{http://matplotlib.org/api/markers_api.html#module-matplotlib.markers}
+#' @param alpha numeric indicating transparency (0-1, default: 1)
+#' @param linewidths numeric of either length 1 or \code{length(x)} indicating
+#'   the border width of the points (default: 1)
+#' @param args character string of further arguments passed to the **kwargs
+#'   argument of matplotlib.pyplot.scatter
+#' @param show bool indicating whether to open a window with the plot
+#' @examples
+#' pyscatter(runif(20), runif(20))
+#' if (interactive()) pyshow()
+#' @seealso \link{pyplot} 
+#'   \url{http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter}
+#' @export
+pyscatter <- function(x, y, s = 20, c = "b", marker = "o", alpha = 1,
+                      linewidths = NULL, args = NULL, show = FALSE)
+{
+  plotvar("x", x)
+  plotvar("y", y)
+  
+  # s can be either scalar or array_like
+  if (length(s) > 1)
+  {
+    plotvar("s", s)
+    s <- "_pvars['s']"
+  }
+  
+  # c can be either character (single character or #hex string) or tuple
+  if (is.character(c))
+  {
+    c <- paste0("'", c, "'")
+  } else
+  {
+    c <- paste0("(", paste(c, collapse = ","), ")")
+  }
+  
+  # marker is character
+  marker <- paste0("'", marker, "'")
+  
+  # linewidths can be either scalar, array_like or None
+  if (length(linewidths) > 1)
+  {
+    plotvar("lwds", linewidths)
+    linewidths <- "_pvars['lwds']"
+  } else if (is.null(linewidths))
+  {
+    linewidths <- "None"
+  }
+  
+  # alpha can be either scalar or None
+  if (is.null(alpha)) alpha <- "None"
+  
+  # Further arguments
+  args <- ifelse(!is.null(args), paste0(",", args), "")
+  
+  pyrun(paste0("plt.scatter(_pvars['x'], _pvars['y'], s = ", s, ", c = ", c,
+               ", marker = ", marker, ", alpha = ", alpha, ", linewidths = ",
+               linewidths, args, ")"))
+  pyrun("del(_pvars)")
+  
+  if (show) pyshow()
+}
+
+#' Plot vertical lines using pyplot.vlines
+#' 
+#' @param x numeric or a numeric vector with x-values for vertical lines
+#' @param ymin numeric or a numeric vector of \code{length(x)} indicating lower
+#'   y-values of the lines
+#' @param ymax numeric or a numeric vector of \code{length(x)} indicating upper
+#'   y-values of the lines
+#' @param colors character indicating the color of the lines
+#' @param linestyle character string indicating the linestyle, one of
+#'   \code{"solid"} (default), \code{"dashed"}, \code{"dashdot"} or
+#'   \code{"dotted"}
+#' @param label character string
+#' @param args character string of further arguments passed to the **kwargs
+#'   argument of matplotlib.pyplot.vlines
+#' @param show bool indicating whether to open a window with the plot
+#' @examples
+#' pyvlines(c(1, 3, 5), 0, 10)
+#' if (interactive()) pyshow()
+#' @seealso \link{pyhlines}
+#'   \url{http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.vlines}
+#' @export
+pyvlines <- function(x, ymin, ymax, colors = "k", linestyles = "solid",
+                     label = "", args = NULL, show = FALSE)
+{
+  plotvar("x", x)
+  
+  if (length(ymin) > 1)
+  {
+    plotvar("ymin", ymin)
+    ymin <- "_pvars['ymin']"
+  }
+  
+  if (length(ymax) > 1)
+  {
+    plotvar("ymax", ymax)
+    ymax <- "_pvars['ymax']"
+  }
+  
+  colors <- paste0("'", colors, "'")
+  
+  linestyles <- paste0("'", linestyles, "'")
+  
+  label <- paste0("'", label, "'")
+  
+  args <- ifelse(!is.null(args), paste0(",", args), "")
+  
+  pyrun(paste0("plt.vlines(_pvars['x'], ymin = ", ymin, ", ymax = ", ymax,
+               ", colors = ", colors, ", linestyles = ", linestyles,
+               ", label = ", label, args, ")"))
+  pyrun("del(_pvars)")
+  
+  if (show) pyshow()
+}
+
+#' Plot horizontal lines using pyplot.hlines
+#' 
+#' @param y numeric or a numeric vector with y-values for horizontal lines
+#' @param xmin numeric or a numeric vector of \code{length(y)} indicating lower
+#'   x-values of the lines
+#' @param xmax numeric or a numeric vector of \code{length(y)} indicating upper
+#'   x-values of the lines
+#' @param colors character indicating the color of the lines
+#' @param linestyle character string indicating the linestyle, one of
+#'   \code{"solid"} (default), \code{"dashed"}, \code{"dashdot"} or
+#'   \code{"dotted"}
+#' @param label character string
+#' @param args character string of further arguments passed to the **kwargs
+#'   argument of matplotlib.pyplot.hlines
+#' @param show bool indicating whether to open a window with the plot
+#' @examples
+#' pyhlines(1:10, 0, 10)
+#' if (interactive()) pyshow()
+#' @seealso \link{pyvlines} 
+#'   \url{http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hlines}
+#' @export
+pyhlines <- function(y, xmin, xmax, colors = "k", linestyles = "solid",
+                     label = "", args = NULL, show = FALSE)
+{
+  plotvar("y", y)
+  
+  if (length(xmin) > 1)
+  {
+    plotvar("xmin", xmin)
+    xmin <- "_pvars['xmin']"
+  }
+  
+  if (length(xmax) > 1)
+  {
+    plotvar("xmax", xmax)
+    xmax <- "_pvars['xmax']"
+  }
+  
+  colors <- paste0("'", colors, "'")
+  
+  linestyles <- paste0("'", linestyles, "'")
+  
+  label <- paste0("'", label, "'")
+  
+  args <- ifelse(!is.null(args), paste0(",", args), "")
+  
+  pyrun(paste0("plt.hlines(_pvars['y'], xmin = ", xmin, ", xmax = ", xmax,
+               ", colors = ", colors, ", linestyles = ", linestyles,
+               ", label = ", label, args, ")"))
+  pyrun("del(_pvars)")
+  
+  if (show) pyshow()
+}
+
 #' Show figures
 #' Run pyplot.show(). This will open all created figure windows and hang R before all windows are closed.
 #' @export
