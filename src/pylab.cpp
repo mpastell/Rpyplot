@@ -90,18 +90,16 @@ void charvec_to_python(std::vector< std::string > strings, std::string name){
 }
 
 
-
-
 //Add NumericVector to dict in Python
 //Used to "hide" variables for plotting
 //[[Rcpp::export(name="pydict.numeric")]]
-void num_to_dict(NumericVector x, std::string name, std::string dictname = "_pvars"){
+void num_to_dict(NumericVector x, std::string name, std::string dictname){
     add_to_dict(name, dictname, to_list(x));
 }
 
 //Add character vector to dict in Python
 //Used to "hide" variables for plotting
 //[[Rcpp::export(name="pydict.character")]]
-void char_to_dict(std::vector<std::string>  x, std::string name, std::string dictname = "_pvars"){
+void char_to_dict(std::vector<std::string>  x, std::string name, std::string dictname){
     add_to_dict(name, dictname, to_list(x));
 }

@@ -70,11 +70,11 @@ topy.character <- function(strings, name) {
     invisible(.Call('Rpyplot_charvec_to_python', PACKAGE = 'Rpyplot', strings, name))
 }
 
-pydict.numeric <- function(x, name, dictname = "_pvars") {
+pydict.numeric <- function(x, name, dictname) {
     invisible(.Call('Rpyplot_num_to_dict', PACKAGE = 'Rpyplot', x, name, dictname))
 }
 
-pydict.character <- function(x, name, dictname = "_pvars") {
+pydict.character <- function(x, name, dictname) {
     invisible(.Call('Rpyplot_char_to_dict', PACKAGE = 'Rpyplot', x, name, dictname))
 }
 

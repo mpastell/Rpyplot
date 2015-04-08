@@ -11,7 +11,11 @@
 #' pyprint(s)
 #' pyvar(volcano) #Matrix
 #' pyprint(volcano)
-#' 
+#' df <- data.frame(x = rnorm(10), y = 1:10)
+#' pyvar(df)
+#' pyprint(df)
+#' pyvar("l", list(a=3, b=1:10, z="a"))
+#' pyprint(l)
 #' @export
 pyvar <- function(name, x)
 {
@@ -41,18 +45,39 @@ topy.matrix <- function(z, name)
   pyrun(sprintf("%s = (np.reshape(%s, [%i, %i], order='F'))", name, name, nr, nc))  
 }
 
-# Copy variables to a Python dictionary
-pydict <- function(x, name, dictname) UseMethod("pydict") #Generics defined in pylab.cpp
+
+topy.list <- function(l, name)
+{
+  keys <- names(l)
+  for (key in keys)
+  {
+    pydict(l[[key]], key, name)     
+  }
+}
+
+topy.data.frame <- topy.list
+  
+
+#' Copy variables to a Python dictionary in __main__
+#' 
+#' @param x R object to copy
+#' @param key Key of the object as string 
+#' @param name of the dictionary
+#'
+#'  
+#' @export
+pydict <- function(x, key, dictname) UseMethod("pydict") #Some of the methods defined in pylab.cpp
+
 
 # Copy variables to _pvars dictionary for plotting
-plotvar <- function(name, x)
+plotvar <- function(name, x, dictname="_pvars")
 {
   if (missing(x)){
     x <- name
     name <- deparse(substitute(name))
   }
   
-  pydict(x, name)
+  pydict(x, name, dictname)
 }
 
 

@@ -21,5 +21,10 @@ pyvar("s", c("Hello", "R!"))
 pyprint(s)
 pyvar(volcano) #Matrix
 pyprint(volcano)
+df <- data.frame(x = rnorm(10), y = 1:10)
+pyvar(df)
+pyprint(df)
+pyvar("l", list(a=3, b=1:10, z="a"))
+pyprint(l)
 }
 

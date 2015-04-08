@@ -3,6 +3,7 @@
 export(Rvar)
 export(numvec_to_R)
 export(pycontourf)
+export(pydict)
 export(pyerrorbar)
 export(pyfigure)
 export(pyplot)
