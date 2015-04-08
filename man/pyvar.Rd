@@ -6,7 +6,20 @@
 \usage{
 pyvar(name, x)
 }
+\arguments{
+\item{name}{variable name in python}
+
+\item{x}{R data, numeric and character vectors and numeric matrices are currently supported.}
+}
 \description{
 Copy variable from R to Python
+}
+\examples{
+pyvar("x", 1:10)
+pyprint(x)
+pyvar("s", c("Hello", "R!"))
+pyprint(s)
+pyvar(volcano) #Matrix
+pyprint(volcano)
 }
 

@@ -4,7 +4,7 @@
 \alias{pycontourf}
 \title{Filled contour using pyplot}
 \usage{
-pycontourf(x, y, z, args = NULL, show = FALSE)
+pycontourf(x, y, z, args, show = FALSE)
 }
 \arguments{
 \item{x}{A Numeric vector}
@@ -21,8 +21,8 @@ pycontourf(x, y, z, args = NULL, show = FALSE)
 Filled contour using pyplot
 }
 \examples{
-x <- 1:nrow(volcano)*.2
-y <- 1:ncol(volcano)*.5
+x <- 1:ncol(volcano)*.2
+y <- 1:nrow(volcano)*.5
 pycontourf(x, y, volcano)
 if (interactive())
    pyshow()
