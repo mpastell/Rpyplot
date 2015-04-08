@@ -77,3 +77,59 @@ pyprint <- function(x)
     pyrun(paste("print(", deparse(cmd), ")")) 
   }
 }
+
+#' Get the type of Python variable
+#' 
+#' var name of the Pytho variable
+#' 
+#' @examples
+#' pyvar("x", 1:10)
+#' pytype(x)
+#' pytype(x[1])
+#' @export
+pytype <- function(var){
+  cmd <- substitute(var)
+    if (!is.character(cmd))
+      var = deparse(cmd) 
+  capture.output(pyrun(sprintf("print(type(%s).__name__)", var)))
+}
+
+#Type without substitution
+pytype_str <- function(var){
+  capture.output(pyrun(sprintf("print(type(%s).__name__)", var)))
+}
+
+
+#' Copy a variable from Python to R
+#' 
+#' @param var Python variable name
+#' 
+#' @examples
+#' pyvar("x", 1:10)
+#' Rvar("x")
+#' pyrun("f = 3")
+#' Rvar("f")
+#' pyrun("s = ['a', 'b', 'c']")
+#' Rvar("s")
+#' pyrun("s2 = 'a'")
+#' Rvar("s2")
+#' @export
+Rvar <- function(var)
+{
+  type <- pytype_str(var)
+  if (type=="str" || type=="unicode")
+    return(char_to_R(var))
+  if (type=="float" || type=="int")
+    return(num_to_R(var))
+  
+  if (type == "list")
+  {
+    ltype = pytype_str(paste(var, "[0]", sep="")) #Get the type of list, based on first element
+    if (ltype=="float" || ltype=="int")
+      return(numvec_to_R(var))
+    if (ltype=="str" || ltype=="unicode")
+      return(charvec_to_R(var))
+    stop("Unsupported type")
+  }
+  stop("Unsupported type")
+}

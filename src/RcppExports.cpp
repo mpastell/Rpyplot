@@ -5,6 +5,50 @@
 
 using namespace Rcpp;
 
+// numvec_to_R
+NumericVector numvec_to_R(std::string name);
+RcppExport SEXP Rpyplot_numvec_to_R(SEXP nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    __result = Rcpp::wrap(numvec_to_R(name));
+    return __result;
+END_RCPP
+}
+// charvec_to_R
+std::vector<std::string> charvec_to_R(std::string name);
+RcppExport SEXP Rpyplot_charvec_to_R(SEXP nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    __result = Rcpp::wrap(charvec_to_R(name));
+    return __result;
+END_RCPP
+}
+// char_to_R
+std::string char_to_R(std::string name);
+RcppExport SEXP Rpyplot_char_to_R(SEXP nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    __result = Rcpp::wrap(char_to_R(name));
+    return __result;
+END_RCPP
+}
+// num_to_R
+double num_to_R(std::string name);
+RcppExport SEXP Rpyplot_num_to_R(SEXP nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    __result = Rcpp::wrap(num_to_R(name));
+    return __result;
+END_RCPP
+}
 // pyrun
 void pyrun(std::string command);
 RcppExport SEXP Rpyplot_pyrun(SEXP commandSEXP) {
@@ -53,28 +97,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
     charvec_to_python(strings, name);
     return R_NilValue;
-END_RCPP
-}
-// numvec_to_R
-NumericVector numvec_to_R(std::string name);
-RcppExport SEXP Rpyplot_numvec_to_R(SEXP nameSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
-    __result = Rcpp::wrap(numvec_to_R(name));
-    return __result;
-END_RCPP
-}
-// charvec_to_R
-std::vector<std::string> charvec_to_R(std::string name);
-RcppExport SEXP Rpyplot_charvec_to_R(SEXP nameSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
-    __result = Rcpp::wrap(charvec_to_R(name));
-    return __result;
 END_RCPP
 }
 // num_to_dict
