@@ -18,6 +18,7 @@ PyObject* to_list(NumericVector x){
       //std::cout << i << "\n";
       PyList_SetItem(xpy, i, f);
     }
+    
     return(xpy);
 }
 
@@ -31,7 +32,7 @@ PyObject* to_list(std::vector< std::string > strings){
     {
       s = PyUnicode_FromString(strings[i].c_str());
       PyList_SetItem(xpy, i, s);
-    }   
+    }
     return(xpy);
 }
 
@@ -50,7 +51,7 @@ PyObject* from_main(std::string name){
 }
 
 //Add data to dict in main. Create the dict if it doesn't exist
-PyObject* add_to_dict(std::string name, std::string dictname, PyObject *pyobj)
+void add_to_dict(std::string name, std::string dictname, PyObject *pyobj)
 {
   PyObject *dict = from_main(dictname);
   if (dict==NULL || !PyDict_Check(dict))// !PyDict_Check(dict)) //Create new if dict doesn't exist
