@@ -1,24 +1,52 @@
-#' Plot x vs y using pyplot.plot
+#' Plot lines or markersusing pyplot.plot
+#'
+#' Plot 2D line plots and scatter plots using matplotlib.pyplot.plot. You can interact with the plots using matplotlib tools
+#' after calling pyshow() (=pyplot.show)   
 #' 
-#' Plot 2D line plots and scatter plots using pyplot.plot. You can interact with the plots using matplotlib tools
-#' after calling pyshow() (=pyplot.show)  
-#' 
-#' @param x A Numeric vector
-#' @param y A Numeric vector
-#' @param args String of extra arguments that are passed to Python
-#' @param show If TRUE the plot will open and block (calls pyplot.show)
+#' @param x numeric vector containing the x coordinates of points
+#' @param y numeric vector containing the y coordinates of points
+#' @param color color of the points (default: \code{"b"}), can be one of
+#'   \itemize{
+#'     \item{single character for basic built-in matplotlib colors, see
+#'       \url{http://matplotlib.org/api/colors_api.html#module-matplotlib.colors
+#'       }
+#'     }
+#'     \item{a numeric value between 0 and 1 as character, indicating gray
+#'       shade, e.g. \code{"0.75"}}
+#'     \item{hex string, e.g. \code{"#00ff00"} for green}
+#'     \item{numeric vector of length three, for RGB (red, green and blue, each
+#'       between 0 and 1)}
+#'     \item{numeric vector of length four, for RGBA (red, green, blue and
+#'       opacity, each between 0 and 1)}
+#'     \item{character string with HTML color name, e.g. \code{"slateblue"},
+#'       see \url{http://www.w3schools.com/html/html_colornames.asp}}
+#'   }
+#' @param marker single character indicating shape of the points (default:
+#'   \code{"o"}), see
+#'   \url{http://matplotlib.org/api/markers_api.html#module-matplotlib.markers}
+#' @param alpha numeric indicating transparency (0-1, default: 1)
+#' @param linewidth numeric of either length 1 or \code{length(x)} indicating
+#'   the border width of the points (default: 1)
+#' @param linestyle style of the plotted line. See: \url{http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D.set_linestyle}   
+#' @param args character string of further arguments passed to the **kwargs
+#'   argument of matplotlib.pyplot.scatter
+#' @param show bool indicating whether to open a window with the plot
 #' @examples
 #' x = seq(0, 2*pi, length=100)
 #' pyplot(x, sin(x))
-#' pyplot(x, cos(x), args="'r--', linewidth=3")
+#' pyplot(x, cos(x), linewidth=3, color="red", linestyle="--")
 #' pyfigure()
 #' pyplot(x, sin(x)^2)
 #' xlabel("x")
 #' ylabel("$sin(x)^2$")
 #' if(interactive())
 #'    pyshow()
+#' @seealso \link{pyscatter} 
+#'   \url{http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot}
 #' @export
-pyplot <- function(x, y, args, show=FALSE){
+pyplot <- function(x, y, color = "b", marker = "", alpha = 1,
+                      linewidth = 1, linestyle="-", args = NULL, show = FALSE)
+{
   if (missing(y))
   {
     plotvar("x", x)
@@ -29,21 +57,41 @@ pyplot <- function(x, y, args, show=FALSE){
     plotvar("y", y)
     cmd = "_pvars['x'],_pvars['y']"
   }
-  
-  if (!missing(args))
+    
+
+  # color can be either character (single character or #hex string) or tuple
+  if (is.character(color))
   {
-    cmd = paste(cmd, ",", args)
+    color <- paste0("'", color, "'")
+  } else
+  {
+    color <- paste0("(", paste(color, collapse = ","), ")")
   }
   
-  pyrun(paste("plt.plot(", cmd ,")"))
+  # marker is character
+  marker <- paste0("'", marker, "'")
+  
+  # linewidths can be either scalar, array_like or None
+  if (length(linewidth) > 1)
+  {
+    plotvar("lwds", linewidth)
+    linewidths <- "_pvars['lwds']"
+  } 
+  
+  # alpha can be either scalar or None
+  if (is.null(alpha)) alpha <- "None"
+  
+  # Further arguments
+  args <- ifelse(!is.null(args), paste0(",", args), "")
+  
+  pyrun(paste0("plt.plot(", cmd, ", c = ", color,
+               ", marker = ", marker, ", alpha = ", alpha, ", linewidth = ", linewidth,
+               ",linestyle ='", linestyle, "',", args, ")"))
   pyrun("del(_pvars)")
   
-  if (show)
-    pyshow()  
-  
-  #Brings up the window, but can't interact, needs event loop
-  #pyrun("plt.show(block=False)") 
+  if (show) pyshow()
 }
+
 
 #' Plot stem plot using pyplot
 #' 
