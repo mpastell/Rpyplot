@@ -7,5 +7,5 @@ Author: Matti Pastell
 Maintainer: Matti Pastell  <matti.pastell@helsinki.fi>
 Description: Interface matplotlib from R.
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.11.5)
+Imports: Rcpp (>= 0.11.5), png
 LinkingTo: Rcpp

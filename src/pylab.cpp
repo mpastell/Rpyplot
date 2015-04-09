@@ -60,9 +60,6 @@ void initialize_python() {
     pyrun("class _StderrCatcher:\n  def write(self, out):\n    _Rcerr(out)");
     pyrun("import sys\nsys.stdout = _StdoutCatcher()");
     pyrun("import sys\nsys.stderr = _StderrCatcher()");
-    pyrun("import matplotlib");
-    //pyrun("matplotlib.use('Qt4Agg')");
-    pyrun("import matplotlib.pyplot as plt");
 }
 
 //[[Rcpp::export]]

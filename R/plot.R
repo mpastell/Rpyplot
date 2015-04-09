@@ -390,27 +390,21 @@ pyhlines <- function(y, xmin, xmax, colors = "k", linestyles = "solid",
 #' Run pyplot.show(). This will open all created figure windows and hang R before all windows are closed.
 #' @export
 pyshow <- function(){
-  #TODO test for Rstudio server and use image to show plot?
+   
+    #Show saved png plots in Rstudio server
     if (isRstudio_server())
-      stop("Can't open figure window")
-  
-    pyrun("plt.show()")
-}
-
-#Check if using Rstudio server
-isRstudio_server <- function(){
-  isRStudio <- Sys.getenv("RSTUDIO") == "1"
-  
-  if (isRStudio) {
-    require(rstudio)
-    rstudioVer <- versionInfo()
-    if (rstudioVer$mode == "server")
     {
-      return(TRUE)
-    } 
-  }
-  
-  return(FALSE)
+      pname <- paste0(tempfile(), ".png")
+      pyrun(sprintf("plt.savefig('%s', dpi=200)", pname))
+      pyrun("plt.close()")
+      library(grid)
+      library(png)
+      plt <- readPNG(pname)
+      plot.new()
+      grid.raster(plt)
+    }else{
+      pyrun("plt.show()")
+    }
 }
 
 

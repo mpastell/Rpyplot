@@ -1,4 +1,20 @@
 
+#Check if using Rstudio server
+isRstudio_server <- function(){
+  isRStudio <- Sys.getenv("RSTUDIO") == "1"
+  
+  if (isRStudio) {
+    library(rstudio)
+    rstudioVer <- versionInfo()
+    if (rstudioVer$mode == "server")
+    {
+      return(TRUE)
+    } 
+  }
+  
+  return(FALSE)
+}
+
 #' Copy variable from R to Python
 #' 
 #' @param name variable name in python
