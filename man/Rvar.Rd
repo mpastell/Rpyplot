@@ -21,5 +21,8 @@ pyrun("s = ['a', 'b', 'c']")
 Rvar("s")
 pyrun("s2 = 'a'")
 Rvar("s2")
+data(whiteside, package="MASS")
+pyvar(whiteside)
+Rvar(whiteside)
 }
 

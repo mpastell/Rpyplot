@@ -159,6 +159,9 @@ pytype_str <- function(var){
 #' Rvar("s")
 #' pyrun("s2 = 'a'")
 #' Rvar("s2")
+#' data(whiteside, package="MASS")
+#' pyvar(whiteside)
+#' Rvar(whiteside)
 #' @export
 Rvar <- function(var)
 {
@@ -166,21 +169,40 @@ Rvar <- function(var)
   if (!is.character(cmd))
     var = deparse(cmd)
   
-  
   type <- pytype_str(var)
   if (type=="str" || type=="unicode")
     return(char_to_R(var))
   if (type=="float" || type=="int")
     return(num_to_R(var))
-  
   if (type == "list")
+    return(Rvar_list(var))
+  if (type == "dict")
+    return(Rvar_dict(var))
+  stop("Unsupported type")
+}
+
+#Python dict to R
+Rvar_dict <- function(var)
+{
+  pyrun(sprintf("_pyr_keys = list(%s.keys())", var))
+  keys <- Rvar("_pyr_keys")
+  res <- list()
+  for (key in keys)
   {
-    ltype = pytype_str(paste(var, "[0]", sep="")) #Get the type of list, based on first element
-    if (ltype=="float" || ltype=="int")
-      return(numvec_to_R(var))
-    if (ltype=="str" || ltype=="unicode")
-      return(charvec_to_R(var))
-    stop("Unsupported type")
+    pyrun(sprintf("_pyr_temp =  %s['%s']", var, key)) #Key need to be strings
+    res[[key]] = Rvar("_pyr_temp") 
   }
+  
+  return(res)
+}
+
+#Python list to R
+Rvar_list <- function(var)
+{
+  ltype = pytype_str(paste(var, "[0]", sep="")) #Get the type of list, based on first element
+  if (ltype=="float" || ltype=="int")
+    return(numvec_to_R(var))
+  if (ltype=="str" || ltype=="unicode")
+    return(charvec_to_R(var))
   stop("Unsupported type")
 }
