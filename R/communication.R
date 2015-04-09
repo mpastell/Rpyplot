@@ -84,6 +84,11 @@ topy.data.frame <- topy.list
 #' @export
 pydict <- function(x, key, dictname) UseMethod("pydict") #Some of the methods defined in pylab.cpp
 
+pydict.factor <- function(x, key, dictname)
+{
+  pydict(as.character(x), key, dictname)
+}
+
 
 # Copy variables to _pvars dictionary for plotting
 plotvar <- function(name, x, dictname="_pvars")
@@ -157,6 +162,11 @@ pytype_str <- function(var){
 #' @export
 Rvar <- function(var)
 {
+  cmd <- substitute(var)
+  if (!is.character(cmd))
+    var = deparse(cmd)
+  
+  
   type <- pytype_str(var)
   if (type=="str" || type=="unicode")
     return(char_to_R(var))
