@@ -4,8 +4,9 @@
 \alias{pyscatter}
 \title{Plot a scatter plot using pyplot.scatter}
 \usage{
-pyscatter(x, y, s = 20, c = "b", marker = "o", alpha = 1,
-  linewidths = NULL, args = NULL, show = FALSE)
+pyscatter(x, y, s = 20, c = "b", marker = "o", cmap = NULL,
+  norm = NULL, vmin = NULL, vmax = NULL, alpha = 1, linewidths = NULL,
+  args = NULL, show = FALSE)
 }
 \arguments{
 \item{x}{numeric vector containing the x coordinates of points}
@@ -24,17 +25,42 @@ of each point}
   \item{a numeric value between 0 and 1 as character, indicating gray
     shade, e.g. \code{"0.75"}}
   \item{hex string, e.g. \code{"#00ff00"} for green}
-  \item{numeric vector of length three, for RGB (red, green and blue, each
-    between 0 and 1)}
-  \item{numeric vector of length four, for RGBA (red, green, blue and
-    opacity, each between 0 and 1)}
   \item{character string with HTML color name, e.g. \code{"slateblue"},
     see \url{http://www.w3schools.com/html/html_colornames.asp}}
+  \item{a character vector of \code{length(x)} containing a color
+    specification as described above for each point separately}
+  \item{a numeric vector of \code{length(x)}, where each numeric is used
+    to map the according point to a colormap using the \code{cmap},
+    \code{norm}, \code{vmin} and \code{vmax} arguments}
+  \item{a numeric matrix with \code{length(x)} rows and three columns. Each
+    row represents one point in \code{x}/\code{y}, the rows set values for
+    RGB (red, green and blue, each between 0 and 1)}
+  \item{a numeric matrix with \code{length(x)} rows and four columns. Each
+    row represents one point in \code{x}/\code{y}, the rows set values for
+    RGBA (red, green, blue and alpha, each between 0 and 1)}
 }}
 
 \item{marker}{single character indicating shape of the points (default:
 \code{"o"}), see
 \url{http://matplotlib.org/api/markers_api.html#module-matplotlib.markers}}
+
+\item{cmap}{character string containing either the name of a matplotlib
+colormap (see
+\url{http://matplotlib.org/examples/color/colormaps_reference.html}) or a
+string containing a Python call that returns an object of class Colormap,
+e.g. \code{"matplotlib.cm.get_cm('Reds')"} (default: \code{NULL}).}
+
+\item{norm}{character string containing a Python call that returns an object
+of class Normalize, e.g. \code{"matplotlib.colors.Normalize(0, 20)"}
+(default: \code{NULL})}
+
+\item{vmin}{numeric. If \code{c} is a numeric vector, \code{vmin} defines
+what value is mapped to the lower end of the colormap (default:
+\code{NULL}; is set to \code{max(c)} if \code{c} is numeric)}
+
+\item{vmax}{numeric. If \code{c} is a numeric vector, \code{vmin} defines
+what value is mapped to the upper end of the colormap (default:
+\code{NULL}; is set to \code{max(c)} if \code{c} is numeric)}
 
 \item{alpha}{numeric indicating transparency (0-1, default: 1)}
 
@@ -50,7 +76,9 @@ argument of matplotlib.pyplot.scatter}
 Draw a scatter plot using matplotlib.pyplot.scatter
 }
 \examples{
-pyscatter(runif(20), runif(20))
+pyscatter(runif(20), runif(20), s = runif(20, 50, 200),
+          c = runif(20, 0, 100), cmap = "Blues", vmin = 0, vmax = 80)
+
 if (interactive()) pyshow()
 }
 \seealso{
