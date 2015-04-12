@@ -4,7 +4,7 @@ isRstudio_server <- function(){
   isRStudio <- Sys.getenv("RSTUDIO") == "1"
   
   if (isRStudio) {
-    library(rstudio)
+    library(rstudioapi)
     rstudioVer <- versionInfo()
     if (rstudioVer$mode == "server")
     {
