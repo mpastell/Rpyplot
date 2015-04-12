@@ -7,17 +7,18 @@
 pyerrorbar(x, y, xerr, yerr, args = NULL, show = FALSE)
 }
 \arguments{
-\item{x}{A Numeric vector}
+\item{x}{numeric vector containing the x coordinates of points}
 
-\item{y}{A Numeric vector}
+\item{y}{numeric vector containing the y coordinates of points}
 
 \item{xerr}{A numeric vector of x errors at each data point}
 
 \item{yerr}{A numeric vector of y errors at each data point}
 
-\item{args}{String of extra arguments that are passed to Python}
+\item{args}{character string of further arguments passed to the **kwargs
+argument of matplotlib.pyplot.scatter}
 
-\item{show}{If TRUE the plot will open and block (calls pyplot.show)}
+\item{show}{bool indicating whether to open a window with the plot}
 }
 \description{
 Plot error bars using pyplot

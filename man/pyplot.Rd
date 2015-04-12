@@ -2,32 +2,66 @@
 % Please edit documentation in R/plot.R
 \name{pyplot}
 \alias{pyplot}
-\title{Plot x vs y using pyplot.plot}
+\title{Plot lines or markersusing pyplot.plot}
 \usage{
-pyplot(x, y, args, show = FALSE)
+pyplot(x, y, color = "b", marker = "", alpha = 1, linewidth = 1,
+  linestyle = "-", args = NULL, show = FALSE)
 }
 \arguments{
-\item{x}{A Numeric vector}
+\item{x}{numeric vector containing the x coordinates of points}
 
-\item{y}{A Numeric vector}
+\item{y}{numeric vector containing the y coordinates of points}
 
-\item{args}{String of extra arguments that are passed to Python}
+\item{color}{color of the points (default: \code{"b"}), can be one of
+\itemize{
+  \item{single character for basic built-in matplotlib colors, see
+    \url{http://matplotlib.org/api/colors_api.html#module-matplotlib.colors
+    }
+  }
+  \item{a numeric value between 0 and 1 as character, indicating gray
+    shade, e.g. \code{"0.75"}}
+  \item{hex string, e.g. \code{"#00ff00"} for green}
+  \item{numeric vector of length three, for RGB (red, green and blue, each
+    between 0 and 1)}
+  \item{numeric vector of length four, for RGBA (red, green, blue and
+    opacity, each between 0 and 1)}
+  \item{character string with HTML color name, e.g. \code{"slateblue"},
+    see \url{http://www.w3schools.com/html/html_colornames.asp}}
+}}
 
-\item{show}{If TRUE the plot will open and block (calls pyplot.show)}
+\item{marker}{single character indicating shape of the points (default:
+\code{"o"}), see
+\url{http://matplotlib.org/api/markers_api.html#module-matplotlib.markers}}
+
+\item{alpha}{numeric indicating transparency (0-1, default: 1)}
+
+\item{linewidth}{numeric of either length 1 or \code{length(x)} indicating
+the border width of the points (default: 1)}
+
+\item{linestyle}{style of the plotted line. See: \url{http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D.set_linestyle}}
+
+\item{args}{character string of further arguments passed to the **kwargs
+argument of matplotlib.pyplot.scatter}
+
+\item{show}{bool indicating whether to open a window with the plot}
 }
 \description{
-Plot 2D line plots and scatter plots using pyplot.plot. You can interact with the plots using matplotlib tools
+Plot 2D line plots and scatter plots using matplotlib.pyplot.plot. You can interact with the plots using matplotlib tools
 after calling pyshow() (=pyplot.show)
 }
 \examples{
 x = seq(0, 2*pi, length=100)
 pyplot(x, sin(x))
-pyplot(x, cos(x), args="'r--', linewidth=3")
+pyplot(x, cos(x), linewidth=3, color="red", linestyle="--")
 pyfigure()
 pyplot(x, sin(x)^2)
 xlabel("x")
 ylabel("$sin(x)^2$")
 if(interactive())
    pyshow()
+}
+\seealso{
+\link{pyscatter}
+  \url{http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot}
 }
 
