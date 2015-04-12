@@ -207,16 +207,37 @@ pycontourf <- function(x, y, z, args, show=FALSE)
 #'     \item{a numeric value between 0 and 1 as character, indicating gray
 #'       shade, e.g. \code{"0.75"}}
 #'     \item{hex string, e.g. \code{"#00ff00"} for green}
-#'     \item{numeric vector of length three, for RGB (red, green and blue, each
-#'       between 0 and 1)}
-#'     \item{numeric vector of length four, for RGBA (red, green, blue and
-#'       opacity, each between 0 and 1)}
 #'     \item{character string with HTML color name, e.g. \code{"slateblue"},
 #'       see \url{http://www.w3schools.com/html/html_colornames.asp}}
+#'     \item{a character vector of \code{length(x)} containing a color
+#'       specification as described above for each point separately}
+#'     \item{a numeric vector of \code{length(x)}, where each numeric is used
+#'       to map the according point to a colormap using the \code{cmap},
+#'       \code{norm}, \code{vmin} and \code{vmax} arguments}
+#'     \item{a numeric matrix with \code{length(x)} rows and three columns. Each
+#'       row represents one point in \code{x}/\code{y}, the rows set values for
+#'       RGB (red, green and blue, each between 0 and 1)}
+#'     \item{a numeric matrix with \code{length(x)} rows and four columns. Each
+#'       row represents one point in \code{x}/\code{y}, the rows set values for
+#'       RGBA (red, green, blue and alpha, each between 0 and 1)}
 #'   }
 #' @param marker single character indicating shape of the points (default:
 #'   \code{"o"}), see
 #'   \url{http://matplotlib.org/api/markers_api.html#module-matplotlib.markers}
+#' @param cmap character string containing either the name of a matplotlib
+#'   colormap (see 
+#'   \url{http://matplotlib.org/examples/color/colormaps_reference.html}) or a
+#'   string containing a Python call that returns an object of class Colormap,
+#'   e.g. \code{"matplotlib.cm.get_cm('Reds')"} (default: \code{NULL}).
+#' @param norm character string containing a Python call that returns an object
+#'   of class Normalize, e.g. \code{"matplotlib.colors.Normalize(0, 20)"}
+#'   (default: \code{NULL})
+#' @param vmin numeric. If \code{c} is a numeric vector, \code{vmin} defines
+#'   what value is mapped to the lower end of the colormap (default:
+#'   \code{NULL}; is set to \code{max(c)} if \code{c} is numeric)
+#' @param vmax numeric. If \code{c} is a numeric vector, \code{vmin} defines
+#'   what value is mapped to the upper end of the colormap (default:
+#'   \code{NULL}; is set to \code{max(c)} if \code{c} is numeric)
 #' @param alpha numeric indicating transparency (0-1, default: 1)
 #' @param linewidths numeric of either length 1 or \code{length(x)} indicating
 #'   the border width of the points (default: 1)
@@ -224,12 +245,15 @@ pycontourf <- function(x, y, z, args, show=FALSE)
 #'   argument of matplotlib.pyplot.scatter
 #' @param show bool indicating whether to open a window with the plot
 #' @examples
-#' pyscatter(runif(20), runif(20))
+#' pyscatter(runif(20), runif(20), s = runif(20, 50, 200),
+#'           c = runif(20, 0, 100), cmap = "Blues", vmin = 0, vmax = 80)
+#' 
 #' if (interactive()) pyshow()
 #' @seealso \link{pyplot} 
 #'   \url{http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter}
 #' @export
-pyscatter <- function(x, y, s = 20, c = "b", marker = "o", alpha = 1,
+pyscatter <- function(x, y, s = 20, c = "b", marker = "o", cmap = NULL,
+                      norm = NULL, vmin = NULL, vmax = NULL, alpha = 1,
                       linewidths = NULL, args = NULL, show = FALSE)
 {
   plotvar("x", x)
@@ -242,17 +266,41 @@ pyscatter <- function(x, y, s = 20, c = "b", marker = "o", alpha = 1,
     s <- "_pvars['s']"
   }
   
-  # c can be either character (single character or #hex string) or tuple
-  if (is.character(c))
+  # c can be either character (single character or #hex string), sequence of
+  # character (single character or #hex strings) or 
+  if (is.character(c) && length(c) == 1)
   {
     c <- paste0("'", c, "'")
+  } else if (is.matrix(c))
+  {
+    pyvar("__cplot", c) # No method to move matrices to _pvars defined yet
+    c <- "__cplot"
   } else
   {
-    c <- paste0("(", paste(c, collapse = ","), ")")
+    plotvar("c", c)
+    c <- "_pvars['c']"
   }
   
   # marker is character
   marker <- paste0("'", marker, "'")
+  
+  # cmap is object of class matplotlib.colors.Colormap or None
+  # Interface provides an option to pass a string containing the name of a
+  # matplotlib colormap
+  if (is.null(cmap))
+  {
+    cmap <- "None"
+  } else if (!grepl("\\(.*\\)", cmap))
+  {
+    cmap <- paste0("matplotlib.cm.get_cmap('", cmap, "')")
+  }
+  
+  # norm is either an object of class matplotlib.colors.Normalize or None
+  if (is.null(norm)) norm <- "None"
+  
+  # vmin and vmax are either scalar or None
+  if (is.null(vmin)) vmin <- "None"
+  if (is.null(vmax)) vmax <- "None"
   
   # linewidths can be either scalar, array_like or None
   if (length(linewidths) > 1)
@@ -271,9 +319,12 @@ pyscatter <- function(x, y, s = 20, c = "b", marker = "o", alpha = 1,
   args <- ifelse(!is.null(args), paste0(",", args), "")
   
   pyrun(paste0("plt.scatter(_pvars['x'], _pvars['y'], s = ", s, ", c = ", c,
-               ", marker = ", marker, ", alpha = ", alpha, ", linewidths = ",
-               linewidths, args, ")"))
+               ", marker = ", marker, ", cmap = ", cmap, ", norm = ", norm,
+               ", vmin = ", vmin, ", vmax = ", vmax, ", alpha = ", alpha,
+               ", linewidths = ", linewidths, args, ")"))
+  
   pyrun("del(_pvars)")
+  pyrun("if '__cplot' in locals(): del(__cplot)")
   
   if (show) pyshow()
 }
