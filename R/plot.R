@@ -336,16 +336,39 @@ pyscatter <- function(x, y, s = 20, c = "b", marker = "o", cmap = NULL,
 #'   y-values of the lines
 #' @param ymax numeric or a numeric vector of \code{length(x)} indicating upper
 #'   y-values of the lines
-#' @param colors character indicating the color of the lines
-#' @param linestyle character string indicating the linestyle, one of
-#'   \code{"solid"} (default), \code{"dashed"}, \code{"dashdot"} or
-#'   \code{"dotted"}
+#' @param colors color of the line(s) (default: \code{"k"}), can be one of
+#'   \itemize{
+#'     \item{single character for basic built-in matplotlib colors, see
+#'       \url{http://matplotlib.org/api/colors_api.html#module-matplotlib.colors
+#'       }
+#'     }
+#'     \item{a numeric value between 0 and 1 as character, indicating gray
+#'       shade, e.g. \code{"0.75"}}
+#'     \item{hex string, e.g. \code{"#00ff00"} for green}
+#'     \item{character string with HTML color name, e.g. \code{"slateblue"},
+#'       see \url{http://www.w3schools.com/html/html_colornames.asp}}
+#'     \item{a character vector of \code{length(x)} containing a color
+#'       specification as described above for each point separately}
+#'     \item{a numeric vector of \code{length(x)}, where each numeric is used
+#'       to map the according point to a colormap using the \code{cmap},
+#'       \code{norm}, \code{vmin} and \code{vmax} arguments}
+#'     \item{a numeric matrix with \code{length(x)} rows and three columns. Each
+#'       row represents one point in \code{x}/\code{y}, the rows set values for
+#'       RGB (red, green and blue, each between 0 and 1)}
+#'     \item{a numeric matrix with \code{length(x)} rows and four columns. Each
+#'       row represents one point in \code{x}/\code{y}, the rows set values for
+#'       RGBA (red, green, blue and alpha, each between 0 and 1)}
+#'   }
+#' @param linestyle character string or character vector of \code{length(x)}
+#'   indicating the linestyle(s), using \code{"solid"} (default),
+#'   \code{"dashed"}, \code{"dashdot"} or \code{"dotted"}
 #' @param label character string
 #' @param args character string of further arguments passed to the **kwargs
 #'   argument of matplotlib.pyplot.vlines
 #' @param show bool indicating whether to open a window with the plot
 #' @examples
-#' pyvlines(c(1, 3, 5), 0, 10)
+#' pyvlines(c(1, 3, 5), 0, 10, colors = c("r", "g", "b"),
+#'          linestyles = c("solid", "dashed", "dotted"))
 #' if (interactive()) pyshow()
 #' @seealso \link{pyhlines}
 #'   \url{http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.vlines}
@@ -367,9 +390,30 @@ pyvlines <- function(x, ymin, ymax, colors = "k", linestyles = "solid",
     ymax <- "_pvars['ymax']"
   }
   
-  colors <- paste0("'", colors, "'")
+  # colors can be either character (single character or #hex string), sequence
+  # of character (single character or #hex strings) or array with 3 or 4 cols
+  if (is.character(colors) && length(colors) == 1)
+  {
+    colors <- paste0("'", colors, "'")
+  } else if (is.matrix(colors))
+  {
+    pyvar("__colorsplot", colors) # No method to move matrices to _pvars defined yet
+    colors <- "__colorsplot"
+  } else
+  {
+    plotvar("colors", colors)
+    colors <- "_pvars['colors']"
+  }
   
-  linestyles <- paste0("'", linestyles, "'")
+  # linestyles is either string or string sequence
+  if (length(linestyles) == 1)
+  {
+    linestyles <- paste0("'", linestyles, "'")
+  } else
+  {
+    plotvar("linestyles", linestyles)
+    linestyles <- "_pvars['linestyles']"
+  }
   
   label <- paste0("'", label, "'")
   
@@ -378,7 +422,9 @@ pyvlines <- function(x, ymin, ymax, colors = "k", linestyles = "solid",
   pyrun(paste0("plt.vlines(_pvars['x'], ymin = ", ymin, ", ymax = ", ymax,
                ", colors = ", colors, ", linestyles = ", linestyles,
                ", label = ", label, args, ")"))
+  
   pyrun("del(_pvars)")
+  pyrun("if '__colorsplot' in locals(): del(__colorsplot)")
   
   if (show) pyshow()
 }
@@ -390,10 +436,32 @@ pyvlines <- function(x, ymin, ymax, colors = "k", linestyles = "solid",
 #'   x-values of the lines
 #' @param xmax numeric or a numeric vector of \code{length(y)} indicating upper
 #'   x-values of the lines
-#' @param colors character indicating the color of the lines
-#' @param linestyle character string indicating the linestyle, one of
-#'   \code{"solid"} (default), \code{"dashed"}, \code{"dashdot"} or
-#'   \code{"dotted"}
+#' @param colors color of the line(s) (default: \code{"k"}), can be one of
+#'   \itemize{
+#'     \item{single character for basic built-in matplotlib colors, see
+#'       \url{http://matplotlib.org/api/colors_api.html#module-matplotlib.colors
+#'       }
+#'     }
+#'     \item{a numeric value between 0 and 1 as character, indicating gray
+#'       shade, e.g. \code{"0.75"}}
+#'     \item{hex string, e.g. \code{"#00ff00"} for green}
+#'     \item{character string with HTML color name, e.g. \code{"slateblue"},
+#'       see \url{http://www.w3schools.com/html/html_colornames.asp}}
+#'     \item{a character vector of \code{length(x)} containing a color
+#'       specification as described above for each point separately}
+#'     \item{a numeric vector of \code{length(x)}, where each numeric is used
+#'       to map the according point to a colormap using the \code{cmap},
+#'       \code{norm}, \code{vmin} and \code{vmax} arguments}
+#'     \item{a numeric matrix with \code{length(x)} rows and three columns. Each
+#'       row represents one point in \code{x}/\code{y}, the rows set values for
+#'       RGB (red, green and blue, each between 0 and 1)}
+#'     \item{a numeric matrix with \code{length(x)} rows and four columns. Each
+#'       row represents one point in \code{x}/\code{y}, the rows set values for
+#'       RGBA (red, green, blue and alpha, each between 0 and 1)}
+#'   }
+#' @param linestyle character string or character vector of \code{length(x)}
+#'   indicating the linestyle(s), using \code{"solid"} (default),
+#'   \code{"dashed"}, \code{"dashdot"} or \code{"dotted"}
 #' @param label character string
 #' @param args character string of further arguments passed to the **kwargs
 #'   argument of matplotlib.pyplot.hlines
@@ -421,9 +489,30 @@ pyhlines <- function(y, xmin, xmax, colors = "k", linestyles = "solid",
     xmax <- "_pvars['xmax']"
   }
   
-  colors <- paste0("'", colors, "'")
+  # colors can be either character (single character or #hex string), sequence
+  # of character (single character or #hex strings) or array with 3 or 4 cols
+  if (is.character(colors) && length(colors) == 1)
+  {
+    colors <- paste0("'", colors, "'")
+  } else if (is.matrix(colors))
+  {
+    pyvar("__colorsplot", colors) # No method to move matrices to _pvars defined yet
+    colors <- "__colorsplot"
+  } else
+  {
+    plotvar("colors", colors)
+    colors <- "_pvars['colors']"
+  }
   
-  linestyles <- paste0("'", linestyles, "'")
+  # linestyles is either string or string sequence
+  if (length(linestyles) == 1)
+  {
+    linestyles <- paste0("'", linestyles, "'")
+  } else
+  {
+    plotvar("linestyles", linestyles)
+    linestyles <- "_pvars['linestyles']"
+  }
   
   label <- paste0("'", label, "'")
   
@@ -432,7 +521,9 @@ pyhlines <- function(y, xmin, xmax, colors = "k", linestyles = "solid",
   pyrun(paste0("plt.hlines(_pvars['y'], xmin = ", xmin, ", xmax = ", xmax,
                ", colors = ", colors, ", linestyles = ", linestyles,
                ", label = ", label, args, ")"))
+  
   pyrun("del(_pvars)")
+  pyrun("if '__colorsplot' in locals(): del(__colorsplot)")
   
   if (show) pyshow()
 }
