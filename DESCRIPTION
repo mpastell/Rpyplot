@@ -3,8 +3,10 @@ Type: Package
 Title: R interface to matplotlib
 Version: 0.1.0.9000
 Date: 2015-03-30
-Author: Matti Pastell
-Maintainer: Matti Pastell  <matti.pastell@helsinki.fi>
+Authors@R: c(
+    person("Matti", "Pastell", , "matti.pastell@helsinki.fi", c("aut", "cre")),
+    person("Daniel", "Gromer", role = "ctb")
+    )
 Description: Interface matplotlib from R.
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.11.5), png

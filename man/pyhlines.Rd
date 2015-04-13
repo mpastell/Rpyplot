@@ -16,7 +16,29 @@ x-values of the lines}
 \item{xmax}{numeric or a numeric vector of \code{length(y)} indicating upper
 x-values of the lines}
 
-\item{colors}{character indicating the color of the lines}
+\item{colors}{color of the line(s) (default: \code{"k"}), can be one of
+\itemize{
+  \item{single character for basic built-in matplotlib colors, see
+    \url{http://matplotlib.org/api/colors_api.html#module-matplotlib.colors
+    }
+  }
+  \item{a numeric value between 0 and 1 as character, indicating gray
+    shade, e.g. \code{"0.75"}}
+  \item{hex string, e.g. \code{"#00ff00"} for green}
+  \item{character string with HTML color name, e.g. \code{"slateblue"},
+    see \url{http://www.w3schools.com/html/html_colornames.asp}}
+  \item{a character vector of \code{length(x)} containing a color
+    specification as described above for each point separately}
+  \item{a numeric vector of \code{length(x)}, where each numeric is used
+    to map the according point to a colormap using the \code{cmap},
+    \code{norm}, \code{vmin} and \code{vmax} arguments}
+  \item{a numeric matrix with \code{length(x)} rows and three columns. Each
+    row represents one point in \code{x}/\code{y}, the rows set values for
+    RGB (red, green and blue, each between 0 and 1)}
+  \item{a numeric matrix with \code{length(x)} rows and four columns. Each
+    row represents one point in \code{x}/\code{y}, the rows set values for
+    RGBA (red, green, blue and alpha, each between 0 and 1)}
+}}
 
 \item{label}{character string}
 
@@ -25,9 +47,9 @@ argument of matplotlib.pyplot.hlines}
 
 \item{show}{bool indicating whether to open a window with the plot}
 
-\item{linestyle}{character string indicating the linestyle, one of
-\code{"solid"} (default), \code{"dashed"}, \code{"dashdot"} or
-\code{"dotted"}}
+\item{linestyle}{character string or character vector of \code{length(x)}
+indicating the linestyle(s), using \code{"solid"} (default),
+\code{"dashed"}, \code{"dashdot"} or \code{"dotted"}}
 }
 \description{
 Plot horizontal lines using pyplot.hlines
